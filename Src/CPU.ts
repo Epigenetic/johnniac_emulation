@@ -53,7 +53,7 @@ export class CPU {
         return this._ioDevice;
     }
     private _halt = false;
-    // The Overflow Toggle is turned on when an overflow occurs and remains on until one of the operations 003 of 007 turns it off.
+    // The Overflow Toggle is turned on when an overflow occurs and remains on until one of the operations 003 or 007 turns it off.
     private _overflowToggle: boolean = false;
     public get overflowToggle() {
         return this._overflowToggle;
