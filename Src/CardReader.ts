@@ -5,7 +5,7 @@ export class CardReader {
     private _currentCard: number = 0;
 
     public setCard(position: number, value: bigint) {
-        this._cards[position] = value;
+        this._cards[position] = BigInt.asUintN(80, value);
     }
 
     public nextCard(): [bigint, bigint] {
