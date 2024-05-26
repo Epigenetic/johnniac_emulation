@@ -1,4 +1,4 @@
-import { FortyBitMask } from "./Register";
+import { FortyBitMask } from "./Register.js";
 
 export class CardReader {
     private _cards: bigint[] = [];
@@ -9,11 +9,11 @@ export class CardReader {
     }
 
     public nextCard(): [bigint, bigint] {
-        if (this._currentCard > this._cards.length) {
+        if (this._currentCard > this._cards.length - 1) {
             throw new Error("No more cards to read")
         }
 
-        const value = this._cards[this._currentCard++];
+        const value = this._cards[this._currentCard++]!;
 
         return [(value & (FortyBitMask << 40n)) >> 40n, value & FortyBitMask];
     }

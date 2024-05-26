@@ -21,7 +21,7 @@ export class CardStackBuilder {
         for (let row = 11; row >= 0; row--) {
             let lineValue = 0n;
             for (let column = 0; column < 80; column++) {
-                const bit = characters[column][row];
+                const bit = characters[column]![row]!;
                 if (bit) {
                     lineValue |= 1n << BigInt(80 - column - 1);
                 }
