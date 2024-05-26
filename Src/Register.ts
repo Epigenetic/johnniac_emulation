@@ -4,7 +4,7 @@ export class Register {
     private _value: bigint;
 
     constructor() {
-        this.value = 0n;
+        this._value = 0n;
     }
 
     public set value(value: bigint) {
