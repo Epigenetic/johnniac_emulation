@@ -1,7 +1,7 @@
-import { CardReader } from "./CardReader";
-import { Memory } from "./Memory";
-import { OP } from "./OP";
-import { FortyBitMask, NextInstructionRegister, Register } from "./Register";
+import { CardReader } from "./CardReader.js";
+import { Memory } from "./Memory.js";
+import { OP } from "./OP.js";
+import { FortyBitMask, NextInstructionRegister, Register } from "./Register.js";
 
 export enum CurrentCommand {
     Left,
@@ -59,6 +59,28 @@ export class CPU {
         return this._overflowToggle;
     }
 
+    private _stepThrough = false;
+    public set stepThrough(value: boolean) {
+        this._stepThrough = value;
+    }
+
+    public addMemoryBreakpoint(...addresses: number[]) {
+        this._memory.addBreakpoint(...addresses);
+    }
+
+    public removeMemoryBreakpoint(...addresses: number[]) {
+        this._memory.removeBreakpoint(...addresses);
+    }
+
+    private _breakpoints: Set<number> = new Set();
+    public addBreakpoint(...addresses: number[]) {
+        addresses.forEach(address => this._breakpoints.add(address));
+    }
+
+    public removeBreakpoint(...addresses: number[]) {
+        addresses.forEach(address => this._breakpoints.delete(address));
+    }
+
     constructor(memory: Memory, cardReader: CardReader) {
         this._memory = memory;
         this._cardReader = cardReader;
@@ -71,6 +93,19 @@ export class CPU {
             this._instructionRegister.value = word;
 
             const { leftOp, leftAddress, rightOp, rightAddress } = this._decodeWord();
+
+            if (this._stepThrough || this._breakpoints.has(this._nextInstructionRegister.value)) {
+                console.log({
+                    nextInstructionRegister: this._nextInstructionRegister.value,
+                    accumulator: this._accumulator.value,
+                    multipliedQuotient: this._multipliedQuotientRegister.value,
+                    currentCommand: CurrentCommand[this._currentCommand],
+                    OP: this._currentCommand === CurrentCommand.Left ? OP[leftOp] : OP[rightOp],
+                    opAddress: this._currentCommand === CurrentCommand.Left ? leftAddress : rightAddress
+                })
+                debugger;
+            }
+
             if (this._currentCommand === CurrentCommand.Left) {
                 if (!this._executeOp(leftOp, leftAddress)) {
                     // Don't increment next instruction register- we are still processing the same word
@@ -683,7 +718,7 @@ export class CPU {
             case OP.H2R:
             case OP.H3L:
             case OP.H3R:
-                throw new Error(`Unimplemented op code ${op}`);
+                throw new Error(`Unimplemented op code ${OP[op]}`);
             default:
                 throw new Error(`Unknown op code ${op}`);
         }
