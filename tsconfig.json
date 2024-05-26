@@ -3,7 +3,12 @@
         "strictNullChecks": true,
         "lib": ["ES2022"],
         "target": "ES2022",
-        "module": "ES2022"
+        "module": "ES2022",
+        "strict": true,
+        "noImplicitOverride": true,
+        "noUncheckedIndexedAccess": true,
+        "skipLibCheck": true ,
+        "sourceMap": true
     },
     "include": ["src/**/*.ts"]
 }
