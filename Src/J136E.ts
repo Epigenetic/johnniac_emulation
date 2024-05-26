@@ -6,7 +6,7 @@ export function j136e() {
     // ID           LOCN OPN ADDR OPN ADDR     COMMENTS
     // 00000000011111111112222222222333333333344444444445555555555666666666677777777778
     // 12345678901234567890123456789012345678901234567890123456789012345678901234567890
-    // J136E001        $                76,
+    // J136E001        $                76
     // J136E002        P                64
     // J136E003        T                 6
     // J136E004        0 100    0 010 *  9     LINK TO BEGINNING OF LOADER.
@@ -61,8 +61,8 @@ export function j136e() {
     builder.addWordRaw(0o100_0000_000_0000n);
     // J136E029       25 100 0000 000 0000     I CELL
     builder.addWordRaw(0o100_0000_000_0000n);
-    // J136E030       26 100 0000 000 0000     CONSTANT
-    builder.addWordRaw(0o100_0000_000_0000n);
+    // J136E030       26 000 0001 000 0000     CONSTANT
+    builder.addWordRaw(0o000_0001_000_0000n);
     // J136E031       27 130    . 134    .     . CELL --- LINK TO BEGINNING OF PROGRAM
     builder.addWord(OP.HTL, 27, OP.HTR, 27)
     // J136E032       28 000    0 020 P 11     DUMMY
@@ -96,7 +96,7 @@ export function j136e() {
     // J136E046       42                       TRANSLATOR
     builder.addWordRaw(0n);
     // J136E047       43 100 0000 000 0000     $ CELL --- COUNTER
-    builder.addWordRaw(0o100_0000_000_0000n); //TODO - should this be 76?
+    builder.addWordRaw(0o100_0000_000_0000n);
     // J136E048       44               400     * CELL --- ORIGIN OF SYMBOL TABLE
     builder.addWordRaw(400n);
     // J136E049       45               100     NUMBER OF SYMBOLS PERMITTED
@@ -169,20 +169,20 @@ export function j136e() {
     builder.addWord(OP.LM, 6, OP.RA, 7);
     // J136E083          075   12 064   29
     builder.addWord(OP.CLH, 12, OP.AQS, 29);
-    // J136E084          060   13 101 T  1
-    builder.addWord(OP.STQ, 13, OP.C, 7);
-    // J136E085          101 T  0 004 T  1
-    builder.addWord(OP.C, 6, OP.LM, 7);
-    // J136E086          020 T  0 075   12
-    builder.addWord(OP.RA, 6, OP.CLH, 12);
+    // J136E084          060   13 101 T  0
+    builder.addWord(OP.STQ, 13, OP.C, 6);
+    // J136E085          101 T  1 004 T  0
+    builder.addWord(OP.C, 7, OP.LM, 6);
+    // J136E086          020 T  1 075   12
+    builder.addWord(OP.RA, 7, OP.CLH, 12);
     // J136E087          064   14 020   13
     builder.addWord(OP.AQS, 14, OP.RA, 13);
-    // J136E088          064   13 101 T  1
-    builder.addWord(OP.AQS, 13, OP.C, 7)
-    // J136E089          101 T  0 004 T  1
-    builder.addWord(OP.C, 6, OP.LM, 7);
-    // J136E090          020 T  0 075   12
-    builder.addWord(OP.RA, 6, OP.CLH, 12);
+    // J136E088          064   13 101 T  0
+    builder.addWord(OP.AQS, 13, OP.C, 6)
+    // J136E089          101 T  1 004 T  0
+    builder.addWord(OP.C, 7, OP.LM, 6);
+    // J136E090          020 T  1 075   12
+    builder.addWord(OP.RA, 7, OP.CLH, 12);
     // J136E091          024   14 064   15
     builder.addWord(OP.A, 14, OP.AQS, 15);
     // J136E092          020   13 064   13
@@ -193,10 +193,10 @@ export function j136e() {
     builder.addWord(OP.LM, 6, OP.RA, 7);
     // J136E095          075   12 024   14
     builder.addWord(OP.CLH, 12, OP.A, 14);
-    // J136E096          064   13 020   13
-    builder.addWord(OP.AQS, 13, OP.RA, 13);
-    // J136E097          064   14 101 T  1
-    builder.addWord(OP.AQS, 14, OP.C, 7);
+    // J136E096          064   14 020   13
+    builder.addWord(OP.AQS, 14, OP.RA, 13);
+    // J136E097          064   13 101 T  1
+    builder.addWord(OP.AQS, 13, OP.C, 7);
     // J136E098          101 T  0 020 T  1
     builder.addWord(OP.C, 6, OP.RA, 7);
     // J136E099          004 T  0 075   12
@@ -250,7 +250,7 @@ export function j136e() {
     // J136E123     *  3 020 T  4 002 * 12
     builder.addWord(OP.RA, 10, OP.TPL, 121);
     // J136E124          025   58 002 *  4     IF BLANK LOCATION GO TO *  4.
-    builder.addWord(OP.S, 57, OP.TPL, 115);
+    builder.addWord(OP.S, 58, OP.TPL, 115);
     // J136E125     * 12 020    $ 050   12     RELATIVE OR ABSOLUTE LOCATION.
     builder.addWord(OP.RA, 43, OP.ST, 12);
     // J136E126          060 T  0 056 *  8     PREPARE TO STORE WORD.
@@ -266,17 +266,17 @@ export function j136e() {
     // J136E131          071    9 050 T  4     SHIFT BLANK COLUMN INDICATOR.
     builder.addWord(OP.CLC, 9, OP.ST, 10);
     // J136E132          020 $  0 010 * 40     DISCARD SPACE.
-    builder.addWord(OP.RA, 128, OP.TRL, 203)
+    builder.addWord(OP.RA, 128, OP.TRL, 204)
     // J136E133          020 $  0 010 * 40     CONVERT OPERATION.
-    builder.addWord(OP.RA, 129, OP.TRL, 203);
+    builder.addWord(OP.RA, 129, OP.TRL, 204);
     // J136E134          071    6 050 T  1
     builder.addWord(OP.CLC, 6, OP.ST, 7);
     // J136E135          020 $  0 010 * 40
-    builder.addWord(OP.RA, 131, OP.TRL, 203);
+    builder.addWord(OP.RA, 131, OP.TRL, 204);
     // J136E136          071    3 050 T  2
     builder.addWord(OP.CLC, 3, OP.ST, 8);
     // J136E137          020 $  0 010 * 40
-    builder.addWord(OP.RA, 133, OP.TRL, 203);
+    builder.addWord(OP.RA, 133, OP.TRL, 204);
     // J136E138          024 T  1 024 T  2
     builder.addWord(OP.A, 7, OP.A, 8);
     // J136E139          004   61 075   21
@@ -318,7 +318,7 @@ export function j136e() {
     // J136E157          001 *  1 010 $  1     IF C36 IS BLANK GO BACK TO *  1.
     builder.addWord(OP.TNL, 77, OP.TRL, 154);
     // J136E158          020 $  0 010 * 40
-    builder.addWord(OP.RA, 154, OP.TRL, 203);
+    builder.addWord(OP.RA, 154, OP.TRL, 204);
     // J136E159     * 64 056 * 16 020   63     SET SWITCH ACCORDING TO C36.
     builder.addWord(OP.SAR, 177, OP.RA, 63);
     // J136E160          025 P  0 056 * 17     SUBSTITUTE FOR FORWARD REFERENCES.
@@ -340,7 +340,7 @@ export function j136e() {
     // J136E168     * 63 056 T  0 020 T  0
     builder.addWord(OP.SAR, 6, OP.RA, 6);
     // J136E169     * 61 077   21 050 ----
-    builder.addWord(OP.LLH, 21, OP.SAR, 0);
+    builder.addWord(OP.LLH, 21, OP.ST, 0);
     // J136E170     * 19 014 * 64 056 * 65
     builder.addWord(OP.TRR, 155, OP.SAR, 167);
     // J136E171     * 65 056 * 66 020 ----
@@ -366,13 +366,13 @@ export function j136e() {
     // J136E181     * 16          010 ----     , OR . BRANCH
     builder.addWord(OP.BLANK, 0, OP.TRL, 0);
     // J136E182     * 20 024   26 052 * 25     ADDRESS CONVERSION ROUTINE.
-    builder.addWord(OP.A, 26, OP.SAL, 201);
+    builder.addWord(OP.A, 26, OP.SAL, 202);
     // J136E183          052 * 26 120    0
-    builder.addWord(OP.SAL, 200, OP.CLEAR1, 0);
+    builder.addWord(OP.SAL, 201, OP.CLEAR1, 0);
     // J136E184          050 T  1 050 T  3
     builder.addWord(OP.ST, 7, OP.ST, 9);
     // J136E185          020 $  0 010 * 40     PEEL OFF PREFIX.
-    builder.addWord(OP.RA, 181, OP.TRL, 203);
+    builder.addWord(OP.RA, 181, OP.TRL, 204);
     // J136E186          020 T  4 002 * 27     IF OCTAL GO TO * 27
     builder.addWord(OP.RA, 10, OP.TPL, 184);
     // J136E187          020 P  1 014 * 27
@@ -380,7 +380,7 @@ export function j136e() {
     // J136E188     * 27 020   48 050 T  2
     builder.addWord(OP.RA, 48, OP.ST, 8);
     // J136E189          020 $  0 010 * 40     CALL FOR HIGH ORDER CHARACTER
-    builder.addWord(OP.RA, 185, OP.TRL, 203);
+    builder.addWord(OP.RA, 185, OP.TRL, 204);
     // J136E190          056 * 21 025 P  1
     builder.addWord(OP.SAR, 187, OP.S, 65);
     // J136E191     * 21 001 * 23 020 ----
@@ -392,32 +392,32 @@ export function j136e() {
     // J136E194     * 23 060 T  3 010 * 24
     builder.addWord(OP.STQ, 9, OP.TRL, 191);
     // J136E195     * 24 020 $  0 010 * 40
-    builder.addWord(OP.RA, 191, OP.TRL, 203);
+    builder.addWord(OP.RA, 191, OP.TRL, 204);
     // J136E196          004 T  2 036 T  3
     builder.addWord(OP.LM, 8, OP.MA, 9);
     // J136E197          060 T  3 010 * 29
     builder.addWord(OP.STQ, 9, OP.TRL, 194);
     // J136E198     * 29 020 $  0 010 * 40
-    builder.addWord(OP.RA, 194, OP.TRL, 203);
+    builder.addWord(OP.RA, 194, OP.TRL, 204);
     // J136E199          004 T  2 036 T  3
     builder.addWord(OP.LM, 8, OP.MA, 9);
-    // J136E200     * 30 060 T  3 010 * 30
-    builder.addWord(OP.STQ, 9, OP.TRL, 196);
-    // J136E201          020 $  0 010 * 40
-    builder.addWord(OP.RA, 64, OP.TRL, 203);
+    // J136E200          060 T  3 010 * 30
+    builder.addWord(OP.STQ, 9, OP.TRL, 197);
+    // J136E201     * 30 020 $  0 010 * 40
+    builder.addWord(OP.RA, 197, OP.TRL, 204);
     // J136E202          004 T  2 024 T  1
     builder.addWord(OP.LM, 8, OP.A, 7);
     // J136E203          036 T  3 020 * 21
     builder.addWord(OP.MA, 9, OP.RA, 187);
-    // J136E204     * 26 025 * 28 006 * 26
-    builder.addWord(OP.S, 202, OP.TPR, 200);
-    // J136E205     * 25 010 ---- 025 P  0
+    // J136E204          025 * 28 006 * 26
+    builder.addWord(OP.S, 203, OP.TPR, 201);
+    // J136E205     * 26 010 ---- 025 P  0
     builder.addWord(OP.TRL, 0, OP.S, 64);
-    // J136E206     * 28 005 ---- 010 * 26
-    builder.addWord(OP.TNR, 0, OP.TRL, 200);
-    // J136E207     * 40 001 * 23 020    *
+    // J136E206     * 25 005 ---- 010 * 26
+    builder.addWord(OP.TNR, 0, OP.TRL, 201);
+    // J136E207     * 28 001 * 23 020    *
     builder.addWord(OP.TNL, 190, OP.RA, 44);
-    // J136E208          024   26 052 * 41     CHARACTER ROUTINE.
+    // J136E208     * 40 024   26 052 * 41     CHARACTER ROUTINE.
     builder.addWord(OP.A, 26, OP.SAL, 215);
     // J136E209          020   31 071    1
     builder.addWord(OP.RA, 31, OP.CLC, 1);
@@ -446,13 +446,13 @@ export function j136e() {
     // J136E221          020 P  0 050   62
     builder.addWord(OP.RA, 64, OP.ST, 62);
     // J136E222          020 $  0 010 * 40
-    builder.addWord(OP.RA, 218, OP.TRL, 203);
+    builder.addWord(OP.RA, 218, OP.TRL, 204);
     // J136E223          071   34 050   60     STORE SIGN CHARACTER SHIFTED.
     builder.addWord(OP.CLC, 34, OP.ST, 60);
     // J136E224     * 81 020   28 050 * 88
     builder.addWord(OP.RA, 28, OP.ST, 241);
     // J136E225          020 $  0 010 * 40
-    builder.addWord(OP.RA, 221, OP.TRL, 203);
+    builder.addWord(OP.RA, 221, OP.TRL, 204);
     // J136E226          025 P  1 006 * 88     IF DECIMAL POINT GO TO * 88.
     builder.addWord(OP.S, 65, OP.TPR, 241);
     // J136E227          024 P  1 004 P  1
@@ -464,7 +464,7 @@ export function j136e() {
     // J136E230          001 * 90 020 * 88
     builder.addWord(OP.TNL, 228, OP.RA, 241);
     // J136E231          025 P  0 014 * 81
-    builder.addWord(OP.S, 65, OP.TRR, 220);
+    builder.addWord(OP.S, 64, OP.TRR, 220);
     // J136E232     * 90 020 $  0 010 * 20     CONVERT BINARY SCALE FACTOR.
     builder.addWord(OP.RA, 228, OP.TRL, 178);
     // J136E233          020 T  4 002 * 82
@@ -500,7 +500,13 @@ export function j136e() {
     // J136E248     * 92 020   62 072   40     DUMMY
     builder.addWord(OP.RA, 62, OP.LRC, 40);
     // J136E249        . 010    0         .
-    builder.addWord(OP.TRL, 0, OP.BLANK, 0);
+    // builder.addWord(OP.TRL, 0, OP.BLANK, 0);
+
+    // Symbol table starts full of -1's
+    builder.updateIndex(400);
+    for(let i =0; i < 100; i++){
+        builder.addWordRaw(0o100_0000_000_0000n)
+    }
 
     return builder.finalize();
 }
