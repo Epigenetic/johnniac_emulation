@@ -1,8 +1,8 @@
-import { Memory } from "../Src/Memory";
-import { OP } from "../Src/OP";
-import { CPU, CurrentCommand, IODevice } from "../Src/CPU";
-import { CardReader } from "../Src/CardReader";
-import { FortyBitMask } from "../Src/Register";
+import { Memory } from "../Src/Memory.js";
+import { OP } from "../Src/OP.js";
+import { CPU, CurrentCommand, IODevice } from "../Src/CPU.js";
+import { CardReader } from "../Src/CardReader.js";
+import { FortyBitMask } from "../Src/Register.js";
 
 const ThirtyNineBitMask = ((1n << 39n) - 1n);
 

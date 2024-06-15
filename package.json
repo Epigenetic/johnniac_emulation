@@ -2,6 +2,7 @@
   "name": "johnniac_emu",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "scripts": {
     "test": "jest"
   },
