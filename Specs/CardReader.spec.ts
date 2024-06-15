@@ -1,4 +1,4 @@
-import { CardReader } from "../Src/CardReader"
+import { CardReader } from "../Src/CardReader.js"
 
 describe("CardReader", () => {
     it("Splits card into two words", () => {
