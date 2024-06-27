@@ -1,6 +1,6 @@
 import { CPU } from "./CPU.js";
 import { CardStackBuilder } from "./CardStackBuilder.js";
-import { j136e } from "./J136E.js";
+import { j136e } from "./J136E-Modified.js";
 import { OP } from "./OP.js";
 
 const builder = new CardStackBuilder();
