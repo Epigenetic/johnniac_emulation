@@ -880,6 +880,20 @@ describe("CPU", () => {
             expect(cpu.accumulator).toBe(0n);
         });
     });
+    describe("PI",()=>{
+        it("Takes logical intersection",()=>{
+            const memory = new Memory();
+            memory.set(0,buildWord(OP.RA,2,OP.PI,3));
+            memory.set(1,buildWord(OP.HTR,2,OP.BLANK,0));
+            memory.set(2,3n);
+            memory.set(3,1n);
+
+            const cpu = new CPU(memory,new CardReader());
+            cpu.go();
+            expect(cpu.accumulator).toBe(1n);
+            expect(cpu.numberRegister).toBe(1n);
+        });
+    });
     describe("NI", () => {
         it("Takes logical intersection of logical complement", () => {
             const memory = new Memory();

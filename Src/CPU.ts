@@ -649,6 +649,13 @@ export class CPU {
             case OP.CLEAR4:
                 this._accumulator.value = 0n;
                 break;
+            case OP.PI:
+                {
+                    // The bit by bit intersection of the word specified in the Store and the word in the Accumulator is formed and put in the Accumulator.
+                    this._numberRegister.value = this._memory.get(data);
+                    this._accumulator.value &= this._numberRegister.value;
+                }
+                break;
             case OP.NI:
                 {
                     // The logical complement of the word specified in the Store is used to form the intersection with the word in A. The result is put in A,
@@ -709,7 +716,6 @@ export class CPU {
             case OP.EJ:
             case OP.RD:
             case OP.WD:
-            case OP.PI:
             case OP.PMI:
             case OP.NMI:
             case OP.H1L:
