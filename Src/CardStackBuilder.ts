@@ -13,7 +13,7 @@ export class CardStackBuilder {
         for (let i = 0; i < 80; i++) {
             const character = CharacterEncoding[value.charAt(i) === '' ? ' ' : value.charAt(i)];
             if (!character) {
-                throw new Error(`Character without mapping: ${character}`);
+                throw new Error(`Character without mapping: ${value.charAt(i)}`);
             }
             characters[i] = character;
         }
@@ -86,5 +86,7 @@ const CharacterEncoding: Record<string, CardColumn> = {
     '=': [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0],
     '(': [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0],
     ')': [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0],
-    '/': [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+    '/': [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    '+': [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0],
+    '\'': [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0]
 }
