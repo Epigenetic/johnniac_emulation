@@ -973,8 +973,31 @@ describe("CPU", () => {
             expect(drums.getWord(0, 1, 2, 6)).toBe(1n);
             expect(drums.getWord(0, 1, 2, 7)).toBe(4n);
             expect(drums.getWord(0, 1, 2, 8)).toBe(1n);
-        })
-    })
+        });
+    });
+    describe("SRC", () => {
+        it("Clears MQ", () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.LM, 1, OP.SRC, 1));
+            memory.set(1, buildWord(OP.HTL, 1, OP.BLANK, 0));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.go();
+
+            expect(cpu.multipliedQuotientRegister).toBe(0n);
+        });
+        it("Shfits accumulator right", () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.RA, 2, OP.SRC, 2));
+            memory.set(1, buildWord(OP.HTL, 1, OP.BLANK, 0));
+            memory.set(2, 8n);
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.go();
+
+            expect(cpu.accumulator).toBe(2n);
+        });
+    });
 });
 
 function buildWord(leftCommand: OP, leftAddress: number, rightCommand: OP, rightAddress: number): bigint {

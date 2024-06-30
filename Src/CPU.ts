@@ -546,6 +546,15 @@ export class CPU {
                     this._memory.set(data, this._accumulator.value);
                 }
                 break;
+            case OP.SRC:
+                //The operation 070 clears the MQ before the start of the shift.
+                this._multipliedQuotientRegister.value = 0n;
+                //The shift moves the bits in the Accumulator to the right the specified number of positions.
+                // Zeros are brought into the zero position of A and bits are dropped from position 39 of A
+                // as the shift progresses. MQ is not shifted. This shift is not equivalent to dividing
+                // the word in the Accumulator by a power of two if the word is negative.
+                this._accumulator.value >>= BigInt(data);
+                break;
             case OP.CLC:
                 // The operation clears MQ before the actual shifting. 
                 this._multipliedQuotientRegister.value = 0n;
@@ -742,7 +751,6 @@ export class CPU {
             case OP.SNV:
             case OP.AVS:
             case OP.SVS:
-            case OP.SRC:
             case OP.LLC:
             case OP.DIS:
             case OP.HUT:
