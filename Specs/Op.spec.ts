@@ -3,6 +3,7 @@ import { OP } from "../Src/OP.js";
 import { CPU, CurrentCommand, IODevice } from "../Src/CPU.js";
 import { CardReader } from "../Src/CardReader.js";
 import { FortyBitMask } from "../Src/Register.js";
+import { Drums } from "../Src/Drum.js";
 
 const ThirtyNineBitMask = ((1n << 39n) - 1n);
 
@@ -11,7 +12,7 @@ describe("CPU", () => {
         it("Does nothing", () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.BLANK, 0, OP.HTL, 10))
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(0n);
             expect(cpu.multipliedQuotientRegister).toBe(0n);
@@ -28,7 +29,7 @@ describe("CPU", () => {
             memory.set(2, buildWord(OP.HTL, 5, OP.HTR, 10));
             memory.set(3, buildWord(OP.BLANK, 0, OP.HTR, 10));
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.nextInstructionRegister).toBe(5);
             expect(cpu.currentCommand).toBe(CurrentCommand.Left);
@@ -40,7 +41,7 @@ describe("CPU", () => {
             memory.set(2, 0n); // 0 does not have sign bit set
             memory.set(3, buildWord(OP.HTL, 10, OP.BLANK, 0));
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.nextInstructionRegister).toBe(5);
             expect(cpu.currentCommand).toBe(CurrentCommand.Right);
@@ -54,7 +55,7 @@ describe("CPU", () => {
             memory.set(2, 0n); // 0 does not have sign bit set
             memory.set(3, buildWord(OP.HTL, 10, OP.BLANK, 0));
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.nextInstructionRegister).toBe(10);
             expect(cpu.currentCommand).toBe(CurrentCommand.Left);
@@ -66,7 +67,7 @@ describe("CPU", () => {
             memory.set(2, FortyBitMask); // Mask has sign bit set
             memory.set(3, buildWord(OP.HTL, 10, OP.BLANK, 0));
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.nextInstructionRegister).toBe(5);
             expect(cpu.currentCommand).toBe(CurrentCommand.Right);
@@ -78,7 +79,7 @@ describe("CPU", () => {
             memory.set(0, buildWord(OP.LM, 1, OP.HTR, 3));
             memory.set(1, 123n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.multipliedQuotientRegister).toBe(123n);
             expect(cpu.numberRegister).toBe(123n);
@@ -92,7 +93,7 @@ describe("CPU", () => {
             memory.set(2, FortyBitMask);
             memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 10));
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.nextInstructionRegister).toBe(10);
             expect(cpu.currentCommand).toBe(CurrentCommand.Right);
@@ -104,7 +105,7 @@ describe("CPU", () => {
             memory.set(2, 0n);
             memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 10));
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.nextInstructionRegister).toBe(5);
             expect(cpu.currentCommand).toBe(CurrentCommand.Left);
@@ -118,7 +119,7 @@ describe("CPU", () => {
             memory.set(2, 0n);
             memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 10));
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.nextInstructionRegister).toBe(10);
             expect(cpu.currentCommand).toBe(CurrentCommand.Right);
@@ -130,7 +131,7 @@ describe("CPU", () => {
             memory.set(2, FortyBitMask);
             memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 10));
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.nextInstructionRegister).toBe(5);
             expect(cpu.currentCommand).toBe(CurrentCommand.Left);
@@ -143,7 +144,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 10, OP.BLANK, 0));
             memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 10));
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.nextInstructionRegister).toBe(5);
             expect(cpu.currentCommand).toBe(CurrentCommand.Left);
@@ -156,7 +157,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 5, OP.BLANK, 0));
             memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 10));
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.nextInstructionRegister).toBe(10);
             expect(cpu.currentCommand).toBe(CurrentCommand.Right);
@@ -168,7 +169,7 @@ describe("CPU", () => {
             memory.set(0, buildWord(OP.RA, 1, OP.HTL, 10));
             memory.set(1, 12345n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(12345n);
             expect(cpu.numberRegister).toBe(12345n);
@@ -180,7 +181,7 @@ describe("CPU", () => {
             memory.set(0, buildWord(OP.RS, 1, OP.HTL, 10));
             memory.set(1, 12345n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(BigInt.asUintN(40, ~12345n + 1n));
             expect(cpu.numberRegister).toBe(12345n);
@@ -190,7 +191,7 @@ describe("CPU", () => {
             memory.set(0, buildWord(OP.RS, 1, OP.HTL, 10));
             memory.set(1, 1n << 39n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(BigInt.asUintN(40, ~(1n << 39n) + 1n));
             expect(cpu.numberRegister).toBe(BigInt.asUintN(40, 1n << 39n));
@@ -205,7 +206,7 @@ describe("CPU", () => {
             memory.set(2, 123n);
             memory.set(3, 456n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(579n);
             expect(cpu.numberRegister).toBe(456n);
@@ -218,7 +219,7 @@ describe("CPU", () => {
             memory.set(2, 0o07777777777777n);
             memory.set(3, 1n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(1n << 39n);
             expect(cpu.numberRegister).toBe(1n);
@@ -231,7 +232,7 @@ describe("CPU", () => {
             memory.set(2, 1n << 39n);
             memory.set(3, -1n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(0o07777777777777n);
             expect(cpu.numberRegister).toBe(BigInt.asUintN(40, -1n));
@@ -244,7 +245,7 @@ describe("CPU", () => {
             memory.set(2, -1n);
             memory.set(3, -2n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(BigInt.asUintN(40, -3n));
             expect(cpu.numberRegister).toBe(BigInt.asUintN(40, -2n));
@@ -257,7 +258,7 @@ describe("CPU", () => {
             memory.set(2, -1n);
             memory.set(3, 2n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(BigInt.asUintN(40, 1n));
             expect(cpu.numberRegister).toBe(BigInt.asUintN(40, 2n));
@@ -272,7 +273,7 @@ describe("CPU", () => {
             memory.set(2, 123n);
             memory.set(3, 456n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(BigInt.asUintN(40, -333n));
             expect(cpu.numberRegister).toBe(456n);
@@ -285,7 +286,7 @@ describe("CPU", () => {
             memory.set(2, 1n << 39n);
             memory.set(3, 1n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(0o07777777777777n);
             expect(cpu.numberRegister).toBe(1n);
@@ -301,7 +302,7 @@ describe("CPU", () => {
             memory.set(3, 0n);
             memory.set(4, 3n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.multipliedQuotientRegister).toBe(6n);
             expect(cpu.numberRegister).toBe(3n);
@@ -316,7 +317,7 @@ describe("CPU", () => {
             memory.set(3, 0n);
             memory.set(4, -3n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.multipliedQuotientRegister).toBe(6n);
             expect(cpu.numberRegister).toBe(BigInt.asUintN(40, -3n));
@@ -331,7 +332,7 @@ describe("CPU", () => {
             memory.set(3, 0n);
             memory.set(4, 3n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.multipliedQuotientRegister).toBe(BigInt.asUintN(40, -6n) & ThirtyNineBitMask);
             expect(cpu.numberRegister).toBe(3n);
@@ -346,7 +347,7 @@ describe("CPU", () => {
             memory.set(3, 0n);
             memory.set(4, -3n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.multipliedQuotientRegister).toBe(BigInt.asUintN(40, -6n) & ThirtyNineBitMask);
             expect(cpu.numberRegister).toBe(BigInt.asUintN(40, -3n));
@@ -361,7 +362,7 @@ describe("CPU", () => {
             memory.set(3, 4n);
             memory.set(4, 3n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.multipliedQuotientRegister).toBe(10n);
             expect(cpu.numberRegister).toBe(3n);
@@ -376,7 +377,7 @@ describe("CPU", () => {
             memory.set(3, 0n);
             memory.set(4, 2n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.multipliedQuotientRegister).toBe(0n);
             expect(cpu.numberRegister).toBe(2n);
@@ -394,7 +395,7 @@ describe("CPU", () => {
             memory.set(2, 6n);
             memory.set(3, 2n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(0n);
             expect(cpu.multipliedQuotientRegister).toBe(3n);
@@ -406,7 +407,7 @@ describe("CPU", () => {
             memory.set(2, 5n);
             memory.set(3, 2n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.multipliedQuotientRegister).toBe(2n);
@@ -419,7 +420,7 @@ describe("CPU", () => {
             memory.set(3, -2n);
             memory.set(4, FortyBitMask);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(BigInt.asUintN(40, -2n));
             expect(cpu.multipliedQuotientRegister).toBe(2n);
@@ -431,7 +432,7 @@ describe("CPU", () => {
             memory.set(2, 6n);
             memory.set(3, -2n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(BigInt.asUintN(40, -2n));
             expect(cpu.multipliedQuotientRegister).toBe(BigInt.asUintN(40, -4n));
@@ -444,7 +445,7 @@ describe("CPU", () => {
             memory.set(3, 2n);
             memory.set(4, FortyBitMask);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(0n);
             expect(cpu.multipliedQuotientRegister).toBe(BigInt.asUintN(40, -3n));
@@ -457,7 +458,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
             memory.set(2, 1234n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(memory.get(4)).toBe(1234n);
         });
@@ -469,7 +470,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
             memory.set(2, FortyBitMask);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             const bits7To19 = 0b0000_0001_1111_1111_1111_0000_0000_0000_0000_0000n;
             expect(memory.get(4)).toBe(bits7To19);
@@ -481,7 +482,7 @@ describe("CPU", () => {
             memory.set(2, FortyBitMask);
             memory.set(4, 0b0101_0101_0101_0101_0101_0101_0101_0101_0101_0101n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(memory.get(4)).toBe(0b0101_0101_1111_1111_1111_0101_0101_0101_0101_0101n);
         });
@@ -493,7 +494,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
             memory.set(2, FortyBitMask);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             const bits28To39 = 0b0000_0000_0000_0000_0000_0000_0000_1111_1111_1111n;
             expect(memory.get(4)).toBe(bits28To39);
@@ -505,7 +506,7 @@ describe("CPU", () => {
             memory.set(2, FortyBitMask);
             memory.set(4, 0b0101_0101_0101_0101_0101_0101_0101_0101_0101_0101n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             const bits28To39 = 0b0101_0101_0101_0101_0101_0101_0101_1111_1111_1111n;
             expect(memory.get(4)).toBe(bits28To39);
@@ -518,7 +519,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
             memory.set(2, 123n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(123n);
             expect(cpu.numberRegister).toBe(123n);
@@ -532,7 +533,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
             memory.set(2, 123n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(BigInt.asUintN(40, -123n));
             expect(cpu.numberRegister).toBe(123n);
@@ -547,7 +548,7 @@ describe("CPU", () => {
             memory.set(2, 123n);
             memory.set(3, 456n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(579n);
             expect(cpu.numberRegister).toBe(123n)
@@ -561,7 +562,7 @@ describe("CPU", () => {
             memory.set(2, 1n);
             memory.set(3, 0o07777777777777n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(1n << 39n);
             expect(cpu.numberRegister).toBe(1n);
@@ -577,7 +578,7 @@ describe("CPU", () => {
             memory.set(2, 123n);
             memory.set(3, 456n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(333n);
             expect(cpu.numberRegister).toBe(123n);
@@ -592,7 +593,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 1n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(2n);
             expect(cpu.multipliedQuotientRegister).toBe(0n);
@@ -603,7 +604,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.CLC, 1, OP.HTR, 2));
             memory.set(2, 1n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(2n);
             expect(cpu.multipliedQuotientRegister).toBe(0n);
@@ -614,7 +615,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 123n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(0n);
             expect(cpu.multipliedQuotientRegister).toBe(123n);
@@ -625,7 +626,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 123n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(123n);
             expect(cpu.multipliedQuotientRegister).toBe(0n);
@@ -638,7 +639,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 2n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.multipliedQuotientRegister).toBe(0n);
@@ -649,7 +650,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.LRC, 1, OP.HTR, 2));
             memory.set(2, 2n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.multipliedQuotientRegister).toBe(0n);
@@ -660,7 +661,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 1n << 39n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(3n << 38n);
             expect(cpu.multipliedQuotientRegister).toBe(1n << 39n);
@@ -671,7 +672,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 1n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(0n);
             expect(cpu.multipliedQuotientRegister).toBe(1n << 38n);
@@ -684,7 +685,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 5n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(2n);
         });
@@ -694,7 +695,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.SRH, 1, OP.HTR, 2));
             memory.set(2, 2n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.multipliedQuotientRegister).toBe(2n);
@@ -707,7 +708,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.CLH, 1, OP.HTR, 2));
             memory.set(2, 2n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(4n);
             expect(cpu.multipliedQuotientRegister).toBe(4n);
@@ -718,7 +719,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.CLH, 1, OP.HTR, 2));
             memory.set(2, 1n << 39n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.multipliedQuotientRegister).toBe(1n);
@@ -731,7 +732,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 2n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.multipliedQuotientRegister).toBe(0n);
@@ -742,7 +743,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.LRH, 1, OP.HTR, 2));
             memory.set(2, 2n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.multipliedQuotientRegister).toBe(1n);
@@ -753,7 +754,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 1n << 39n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(3n << 38n);
             expect(cpu.multipliedQuotientRegister).toBe(1n << 39n);
@@ -764,7 +765,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 1n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(0n);
             expect(cpu.multipliedQuotientRegister).toBe(1n << 38n);
@@ -777,7 +778,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.LLH, 1, OP.HTR, 2));
             memory.set(2, 2n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(4n);
             expect(cpu.multipliedQuotientRegister).toBe(4n);
@@ -788,7 +789,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 1n << 38n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.multipliedQuotientRegister).toBe(0n);
@@ -799,7 +800,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 1n << 39n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(0n);
             expect(cpu.multipliedQuotientRegister).toBe(1n << 39n);
@@ -810,7 +811,7 @@ describe("CPU", () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.SEL, IODevice.CardPunchFeed, OP.HTR, 2));
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.ioDevice).toBe(IODevice.CardPunchFeed);
         });
@@ -824,7 +825,7 @@ describe("CPU", () => {
             const cardReader = new CardReader();
             cardReader.setCard(0, (123n << 40n) | 456n)
 
-            const cpu = new CPU(memory, cardReader);
+            const cpu = new CPU(memory, cardReader, new Drums());
             cpu.go();
             expect(memory.get(2)).toBe(123n);
             expect(cpu.accumulator).toBe(456n);
@@ -834,7 +835,7 @@ describe("CPU", () => {
             memory.set(0, buildWord(OP.SEL, IODevice.AnelexPrinterNoSpace, OP.C, 2));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             expect(cpu.go).toThrow();
         });
     });
@@ -845,7 +846,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 123n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(0n);
         });
@@ -855,7 +856,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 123n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(0n);
         });
@@ -865,7 +866,7 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 123n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(0n);
         });
@@ -875,20 +876,20 @@ describe("CPU", () => {
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 123n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(0n);
         });
     });
-    describe("PI",()=>{
-        it("Takes logical intersection",()=>{
+    describe("PI", () => {
+        it("Takes logical intersection", () => {
             const memory = new Memory();
-            memory.set(0,buildWord(OP.RA,2,OP.PI,3));
-            memory.set(1,buildWord(OP.HTR,2,OP.BLANK,0));
-            memory.set(2,3n);
-            memory.set(3,1n);
+            memory.set(0, buildWord(OP.RA, 2, OP.PI, 3));
+            memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
+            memory.set(2, 3n);
+            memory.set(3, 1n);
 
-            const cpu = new CPU(memory,new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.numberRegister).toBe(1n);
@@ -902,7 +903,7 @@ describe("CPU", () => {
             memory.set(2, 3n);
             memory.set(3, 1n);
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.accumulator).toBe(2n);
             expect(cpu.numberRegister).toBe(1n);
@@ -913,7 +914,7 @@ describe("CPU", () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.HTL, 5, OP.BLANK, 0));
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.nextInstructionRegister).toBe(5);
             expect(cpu.currentCommand).toBe(CurrentCommand.Left);
@@ -924,12 +925,56 @@ describe("CPU", () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.HTR, 5, OP.BLANK, 0));
 
-            const cpu = new CPU(memory, new CardReader());
+            const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.go();
             expect(cpu.nextInstructionRegister).toBe(5);
             expect(cpu.currentCommand).toBe(CurrentCommand.Right);
         });
     });
+    describe("RD", () => {
+        it("Reads drum into memory", () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.LM, 2, OP.RD, 3));
+            memory.set(1, buildWord(OP.HTL, 1, OP.BLANK, 0));
+            memory.set(2, buildWord(0o000, 5, 0o012, 8));
+
+            const drums = new Drums();
+            drums.setWord(0, 1, 2, 5, 3n);
+            drums.setWord(0, 1, 2, 6, 1n);
+            drums.setWord(0, 1, 2, 7, 4n);
+            drums.setWord(0, 1, 2, 8, 1n);
+
+            const cpu = new CPU(memory, new CardReader(), drums);
+            cpu.go();
+
+            expect(memory.get(3)).toBe(3n);
+            expect(memory.get(4)).toBe(1n);
+            expect(memory.get(5)).toBe(4n);
+            expect(memory.get(6)).toBe(1n);
+        });
+    });
+    describe("WD", () => {
+        it("Writes memory into drum", () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.LM, 2, OP.WD, 3));
+            memory.set(1, buildWord(OP.HTL, 1, OP.BLANK, 0));
+            memory.set(2, buildWord(0o000, 5, 0o12, 8));
+            memory.set(3, 3n);
+            memory.set(4, 1n);
+            memory.set(5, 4n);
+            memory.set(6, 1n);
+
+            const drums = new Drums();
+
+            const cpu = new CPU(memory, new CardReader(), drums);
+            cpu.go();
+
+            expect(drums.getWord(0, 1, 2, 5)).toBe(3n);
+            expect(drums.getWord(0, 1, 2, 6)).toBe(1n);
+            expect(drums.getWord(0, 1, 2, 7)).toBe(4n);
+            expect(drums.getWord(0, 1, 2, 8)).toBe(1n);
+        })
+    })
 });
 
 function buildWord(leftCommand: OP, leftAddress: number, rightCommand: OP, rightAddress: number): bigint {

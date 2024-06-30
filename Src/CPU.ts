@@ -1,4 +1,5 @@
 import { CardReader } from "./CardReader.js";
+import { Drums } from "./Drum.js";
 import { Memory } from "./Memory.js";
 import { OP } from "./OP.js";
 import { FortyBitMask, NextInstructionRegister, Register } from "./Register.js";
@@ -48,6 +49,7 @@ export class CPU {
     private _cardReader: CardReader;
 
     private _memory: Memory;
+    private _drums: Drums;
     private _ioDevice: IODevice = IODevice.CardReaderPrimaryFeed;
     public get ioDevice() {
         return this._ioDevice;
@@ -81,9 +83,10 @@ export class CPU {
         addresses.forEach(address => this._breakpoints.delete(address));
     }
 
-    constructor(memory: Memory, cardReader: CardReader) {
+    constructor(memory: Memory, cardReader: CardReader, drums: Drums) {
         this._memory = memory;
         this._cardReader = cardReader;
+        this._drums = drums;
     }
 
     public go(): void {
@@ -92,7 +95,7 @@ export class CPU {
             const word = this._memory.get(this._nextInstructionRegister.value);
             this._instructionRegister.value = word;
 
-            const { leftOp, leftAddress, rightOp, rightAddress } = this._decodeWord();
+            const { leftOp, leftAddress, rightOp, rightAddress } = this._decodeWord(this._instructionRegister.value);
 
             if (this._stepThrough || this._breakpoints.has(this._nextInstructionRegister.value)) {
                 console.log({
@@ -120,9 +123,7 @@ export class CPU {
         }
     }
 
-    private _decodeWord() {
-        const word = this._instructionRegister.value;
-
+    private _decodeWord(word: bigint) {
         const leftOp = Number((word >> 33n) & 0o177n);
         const rightOp = Number((word >> 12n) & 0o177n);
 
@@ -649,6 +650,38 @@ export class CPU {
             case OP.CLEAR4:
                 this._accumulator.value = 0n;
                 break;
+            case OP.RD:
+                {
+                    const {
+                        leftAddress: firstDrumAddress,
+                        rightOp: controlBits,
+                        rightAddress: lastDrumAddress
+                    } = this._decodeWord(this._multipliedQuotientRegister.value);
+
+                    const drum = (controlBits & 0o700) >> 6;
+                    const position = (controlBits & 0o070) >> 3;
+                    const band = controlBits & 0o007;
+
+                    for (let drumAddress = firstDrumAddress; drumAddress <= lastDrumAddress; drumAddress++, data++) {
+                        this._memory.set(data, this._drums.getWord(drum, position, band, drumAddress));
+                    }
+                }
+                break;
+            case OP.WD:
+                const {
+                    leftAddress: firstDrumAddress,
+                    rightOp: controlBits,
+                    rightAddress: lastDrumAddress
+                } = this._decodeWord(this._multipliedQuotientRegister.value);
+
+                const drum = (controlBits & 0o700) >> 6;
+                const position = (controlBits & 0o070) >> 3;
+                const band = controlBits & 0o007;
+
+                for (let drumAddress = firstDrumAddress; drumAddress <= lastDrumAddress; drumAddress++, data++) {
+                    this._drums.setWord(drum, position, band, drumAddress, this._memory.get(data));
+                }
+                break;
             case OP.PI:
                 {
                     // The bit by bit intersection of the word specified in the Store and the word in the Accumulator is formed and put in the Accumulator.
@@ -714,8 +747,6 @@ export class CPU {
             case OP.DIS:
             case OP.HUT:
             case OP.EJ:
-            case OP.RD:
-            case OP.WD:
             case OP.PMI:
             case OP.NMI:
             case OP.H1L:
