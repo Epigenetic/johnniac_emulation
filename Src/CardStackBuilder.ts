@@ -3,12 +3,14 @@ import { CardReader } from "./CardReader.js";
 export class CardStackBuilder {
     private _index = 0;
     private _cardReader = new CardReader();
+    private _cards: string[] = []
 
     public addCard(value: bigint) {
         this._cardReader.setCard(this._index++, value);
     }
 
     public addCardString(value: string) {
+        this._cards.push(value);
         const characters: CardColumn[] = [];
         for (let i = 0; i < 80; i++) {
             const character = CharacterEncoding[value.charAt(i) === '' ? ' ' : value.charAt(i)];
