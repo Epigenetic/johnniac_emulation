@@ -649,7 +649,7 @@ export class CPU {
                         case IODevice.CardPunchFeedAndEcho:
                         case IODevice.ANelexPrinter:
                         case IODevice.AnelexPrinterNoSpace:
-                            throw new Error(`Unimplemented IO device ${this._ioDevice}`)
+                            throw new Error(`Unimplemented IO device ${IODevice[this._ioDevice]}`)
                     }
                 }
                 break;
