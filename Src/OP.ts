@@ -160,6 +160,19 @@ export enum OP {
     /** Halt Conditioned by Switch H3 and Transfer Right */
     H3R = 0o137,
 
+    /** Write line buffer number Ac from memory block starting at address M */
+    WRITE_LINE_BUFFER = 0o140,
+    /** Read line buffer number Ac into memory block starting at address M */
+    READ_LINE_BUFFER = 0o141,
+    /** Write SCR #At from Ab, Ac through mask in M */
+    WRITE_SCR = 0o142,
+    /** Read SCR #At into Ab, Ac */
+    READ_SCR = 0o143,
+    /** Search all SCRs for Match with Ab,Ac bits designated by the mask in cell M */
+    MATCH_SCR = 0o144,
+    /** Search all SCRs for Mismatch with Ab,Ac bits designated by the mask in cell M */
+    MISMATCH_SCR = 0o145,
+
     /** Not a real mnemonic but has the effect of clearing the accumulator */
     CLEAR1 = 0o120,
     /** Not a real mnemonic but has the effect of clearing the accumulator */
