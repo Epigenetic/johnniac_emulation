@@ -5642,7 +5642,7 @@ const memory = j136e();
 
 const drums = new Drums();
 
-const cpu = new CPU(memory, builder.finalize(), drums);
+const cpu = new CPU(memory, builder.finalize(), drums, true);
 //cpu.addBreakpoint(0o7000);
 //cpu.addMemoryBreakpoint(49);
 cpu.go();

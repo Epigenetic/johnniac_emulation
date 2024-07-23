@@ -55,6 +55,10 @@ export class CPU {
         return this._ioDevice;
     }
     private _halt = false;
+
+    private _clockBuffer: Uint16Array | undefined;
+    private _clockWorker: Worker | undefined;
+
     // The Overflow Toggle is turned on when an overflow occurs and remains on until one of the operations 003 or 007 turns it off.
     private _overflowToggle: boolean = false;
     public get overflowToggle() {
@@ -83,10 +87,15 @@ export class CPU {
         addresses.forEach(address => this._breakpoints.delete(address));
     }
 
-    constructor(memory: Memory, cardReader: CardReader, drums: Drums) {
+    constructor(memory: Memory, cardReader: CardReader, drums: Drums, hasClock: boolean = false) {
         this._memory = memory;
         this._cardReader = cardReader;
         this._drums = drums;
+        if (hasClock) {
+            this._clockBuffer = new Uint16Array(new SharedArrayBuffer(2));
+            this._clockWorker = new Worker("./Src/Clock.js");
+            this._clockWorker.postMessage(this._clockBuffer);
+        }
     }
 
     public go(): void {
@@ -652,6 +661,12 @@ export class CPU {
                             throw new Error(`Unimplemented IO device ${IODevice[this._ioDevice]}`)
                     }
                 }
+                break;
+            case OP.CLK:
+                if (!this._clockBuffer) {
+                    throw new Error("Trying to access clock value without requesting clock in constructor.");
+                }
+                this._accumulator.value = BigInt(Atomics.load(this._clockBuffer, 0));
                 break;
             case OP.CLEAR1:
             case OP.CLEAR2:

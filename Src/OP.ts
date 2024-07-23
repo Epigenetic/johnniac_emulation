@@ -129,6 +129,8 @@ export enum OP {
     HUT = 0o105,
     /** Eject the Page of the ANelex Printer */
     EJ = 0o106,
+    /** Read the clock to the accumulator */
+    CLK = 0o107,
     /** Read a Block of Data from the Drum to the Store */
     RD = 0o110,
     /** Write a Block of Data from the Store on the Drum */
