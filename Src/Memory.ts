@@ -25,6 +25,10 @@ export class Memory {
         this._memory[address] = BigInt.asUintN(40, value);
     }
 
+    public slice(start: number, end: number) {
+        return this._memory.slice(start, end);
+    }
+
     public addBreakpoint(...addresses: number[]) {
         addresses.forEach(address => this._breakPoints.add(address));
     }
