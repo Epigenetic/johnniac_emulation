@@ -98,7 +98,7 @@ export class CPU {
         }
     }
 
-    public go(): void {
+    public async go(): Promise<void> {
         this._halt = false;
         while (!this._halt) {
             const word = this._memory.get(this._nextInstructionRegister.value);
@@ -119,12 +119,12 @@ export class CPU {
             }
 
             if (this._currentCommand === CurrentCommand.Left) {
-                if (!this._executeOp(leftOp, leftAddress)) {
+                if (!await this._executeOp(leftOp, leftAddress)) {
                     // Don't increment next instruction register- we are still processing the same word
                     this._currentCommand = CurrentCommand.Right;
                 }
             } else {
-                if (!this._executeOp(rightOp, rightAddress)) {
+                if (!await this._executeOp(rightOp, rightAddress)) {
                     this._nextInstructionRegister.value++;
                     this._currentCommand = CurrentCommand.Left;
                 }
@@ -339,7 +339,7 @@ export class CPU {
 
     }
 
-    private _executeOp(op: OP, data: number) {
+    private async _executeOp(op: OP, data: number) {
         let transferExecuted = false;
 
         switch (op) {

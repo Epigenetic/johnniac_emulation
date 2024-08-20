@@ -9,11 +9,11 @@ const ThirtyNineBitMask = ((1n << 39n) - 1n);
 
 describe("CPU", () => {
     describe("BLANK", () => {
-        it("Does nothing", () => {
+        it("Does nothing", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.BLANK, 0, OP.HTL, 10))
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(0n);
             expect(cpu.multipliedQuotientRegister).toBe(0n);
             expect(cpu.numberRegister).toBe(0n);
@@ -22,7 +22,7 @@ describe("CPU", () => {
         });
     });
     describe("TNL", () => {
-        it("Transfers left on negative", () => {
+        it("Transfers left on negative", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 1, OP.TNL, 2));
             memory.set(1, FortyBitMask); // Mask has sign bit set
@@ -30,11 +30,11 @@ describe("CPU", () => {
             memory.set(3, buildWord(OP.BLANK, 0, OP.HTR, 10));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.nextInstructionRegister).toBe(5);
             expect(cpu.currentCommand).toBe(CurrentCommand.Left);
         });
-        it("Does not transfer on positive", () => {
+        it("Does not transfer on positive", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.TNL, 3));
             memory.set(1, buildWord(OP.HTR, 5, OP.BLANK, 0))
@@ -42,13 +42,13 @@ describe("CPU", () => {
             memory.set(3, buildWord(OP.HTL, 10, OP.BLANK, 0));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.nextInstructionRegister).toBe(5);
             expect(cpu.currentCommand).toBe(CurrentCommand.Right);
         })
     });
     describe("TPL", () => {
-        it("Transfers left on positive", () => {
+        it("Transfers left on positive", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.TPL, 3));
             memory.set(1, buildWord(OP.HTR, 5, OP.BLANK, 0));
@@ -56,11 +56,11 @@ describe("CPU", () => {
             memory.set(3, buildWord(OP.HTL, 10, OP.BLANK, 0));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.nextInstructionRegister).toBe(10);
             expect(cpu.currentCommand).toBe(CurrentCommand.Left);
         });
-        it("Does not transfer on negative", () => {
+        it("Does not transfer on negative", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.TPL, 3));
             memory.set(1, buildWord(OP.HTR, 5, OP.BLANK, 0));
@@ -68,25 +68,25 @@ describe("CPU", () => {
             memory.set(3, buildWord(OP.HTL, 10, OP.BLANK, 0));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.nextInstructionRegister).toBe(5);
             expect(cpu.currentCommand).toBe(CurrentCommand.Right);
         });
     });
     describe("LM", () => {
-        it("Loads to MQ", () => {
+        it("Loads to MQ", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 1, OP.HTR, 3));
             memory.set(1, 123n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.multipliedQuotientRegister).toBe(123n);
             expect(cpu.numberRegister).toBe(123n);
         });
     });
     describe("TRN", () => {
-        it("transfers right on negative", () => {
+        it("transfers right on negative", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.TNR, 3));
             memory.set(1, buildWord(OP.HTL, 5, OP.BLANK, 0));
@@ -94,11 +94,11 @@ describe("CPU", () => {
             memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 10));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.nextInstructionRegister).toBe(10);
             expect(cpu.currentCommand).toBe(CurrentCommand.Right);
         });
-        it("Does not transfer on positive", () => {
+        it("Does not transfer on positive", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.TNR, 3));
             memory.set(1, buildWord(OP.HTL, 5, OP.BLANK, 0));
@@ -106,13 +106,13 @@ describe("CPU", () => {
             memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 10));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.nextInstructionRegister).toBe(5);
             expect(cpu.currentCommand).toBe(CurrentCommand.Left);
         });
     });
     describe("TPR", () => {
-        it("Transfers right on positive", () => {
+        it("Transfers right on positive", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.TPR, 3));
             memory.set(1, buildWord(OP.HTL, 5, OP.BLANK, 0));
@@ -120,11 +120,11 @@ describe("CPU", () => {
             memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 10));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.nextInstructionRegister).toBe(10);
             expect(cpu.currentCommand).toBe(CurrentCommand.Right);
         });
-        it("Does not transfer on negative", () => {
+        it("Does not transfer on negative", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.TPR, 3));
             memory.set(1, buildWord(OP.HTL, 5, OP.BLANK, 0));
@@ -132,74 +132,74 @@ describe("CPU", () => {
             memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 10));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.nextInstructionRegister).toBe(5);
             expect(cpu.currentCommand).toBe(CurrentCommand.Left);
         });
     });
     describe("TRL", () => {
-        it("Transfers left", () => {
+        it("Transfers left", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.TRL, 3, OP.BLANK, 0));
             memory.set(1, buildWord(OP.HTR, 10, OP.BLANK, 0));
             memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 10));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.nextInstructionRegister).toBe(5);
             expect(cpu.currentCommand).toBe(CurrentCommand.Left);
         });
     });
     describe("TRR", () => {
-        it("Transfers right", () => {
+        it("Transfers right", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.TRR, 3, OP.BLANK, 0));
             memory.set(1, buildWord(OP.HTR, 5, OP.BLANK, 0));
             memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 10));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.nextInstructionRegister).toBe(10);
             expect(cpu.currentCommand).toBe(CurrentCommand.Right);
         });
     });
     describe("RA", () => {
-        it("Loads word to accumulator", () => {
+        it("Loads word to accumulator", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 1, OP.HTL, 10));
             memory.set(1, 12345n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(12345n);
             expect(cpu.numberRegister).toBe(12345n);
         });
     });
     describe("RS", () => {
-        it("Loads word complement to accumulator", () => {
+        it("Loads word complement to accumulator", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RS, 1, OP.HTL, 10));
             memory.set(1, 12345n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(BigInt.asUintN(40, ~12345n + 1n));
             expect(cpu.numberRegister).toBe(12345n);
         });
-        it("Triggers overflow if word is -1", () => {
+        it("Triggers overflow if word is -1", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RS, 1, OP.HTL, 10));
             memory.set(1, 1n << 39n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(BigInt.asUintN(40, ~(1n << 39n) + 1n));
             expect(cpu.numberRegister).toBe(BigInt.asUintN(40, 1n << 39n));
             expect(cpu.overflowToggle).toBe(true);
         })
     });
     describe("A", () => {
-        it("Adds accumulator to memory value", () => {
+        it("Adds accumulator to memory value", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.A, 3));
             memory.set(1, buildWord(OP.HTL, 10, OP.BLANK, 0));
@@ -207,12 +207,12 @@ describe("CPU", () => {
             memory.set(3, 456n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(579n);
             expect(cpu.numberRegister).toBe(456n);
             expect(cpu.overflowToggle).toBe(false);
         });
-        it("Triggers positive overflow if it occurs", () => {
+        it("Triggers positive overflow if it occurs", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.A, 3));
             memory.set(1, buildWord(OP.HTL, 10, OP.BLANK, 0));
@@ -220,12 +220,12 @@ describe("CPU", () => {
             memory.set(3, 1n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(1n << 39n);
             expect(cpu.numberRegister).toBe(1n);
             expect(cpu.overflowToggle).toBe(true);
         });
-        it("Triggers negative overflow if it occurs", () => {
+        it("Triggers negative overflow if it occurs", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.A, 3));
             memory.set(1, buildWord(OP.HTL, 10, OP.BLANK, 0));
@@ -233,12 +233,12 @@ describe("CPU", () => {
             memory.set(3, -1n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(0o07777777777777n);
             expect(cpu.numberRegister).toBe(BigInt.asUintN(40, -1n));
             expect(cpu.overflowToggle).toBe(true);
         });
-        it("Adds negative numbers", () => {
+        it("Adds negative numbers", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.A, 3));
             memory.set(1, buildWord(OP.HTL, 10, OP.BLANK, 0));
@@ -246,12 +246,12 @@ describe("CPU", () => {
             memory.set(3, -2n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(BigInt.asUintN(40, -3n));
             expect(cpu.numberRegister).toBe(BigInt.asUintN(40, -2n));
             expect(cpu.overflowToggle).toBe(false);
         });
-        it("Adds mixed signs", () => {
+        it("Adds mixed signs", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.A, 3));
             memory.set(1, buildWord(OP.HTL, 10, OP.BLANK, 0));
@@ -259,14 +259,14 @@ describe("CPU", () => {
             memory.set(3, 2n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(BigInt.asUintN(40, 1n));
             expect(cpu.numberRegister).toBe(BigInt.asUintN(40, 2n));
             expect(cpu.overflowToggle).toBe(false);
         });
     });
     describe("S", () => {
-        it("Subtracts memory value from accumulator", () => {
+        it("Subtracts memory value from accumulator", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.S, 3));
             memory.set(1, buildWord(OP.HTL, 10, OP.BLANK, 0));
@@ -274,12 +274,12 @@ describe("CPU", () => {
             memory.set(3, 456n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(BigInt.asUintN(40, -333n));
             expect(cpu.numberRegister).toBe(456n);
             expect(cpu.overflowToggle).toBe(false);
         });
-        it("Triggers negative overflow if it occurs", () => {
+        it("Triggers negative overflow if it occurs", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.S, 3));
             memory.set(1, buildWord(OP.HTL, 10, OP.BLANK, 0));
@@ -287,14 +287,14 @@ describe("CPU", () => {
             memory.set(3, 1n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(0o07777777777777n);
             expect(cpu.numberRegister).toBe(1n);
             expect(cpu.overflowToggle).toBe(true);
         })
     });
     describe("MA", () => {
-        it("Multiplies", () => {
+        it("Multiplies", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.RA, 3));
             memory.set(1, buildWord(OP.MA, 4, OP.HTL, 2));
@@ -303,13 +303,13 @@ describe("CPU", () => {
             memory.set(4, 3n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.multipliedQuotientRegister).toBe(6n);
             expect(cpu.numberRegister).toBe(3n);
             expect(cpu.accumulator).toBe(0n);
             expect(cpu.overflowToggle).toBe(false);
         });
-        it("Handles negatives", () => {
+        it("Handles negatives", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.RA, 3));
             memory.set(1, buildWord(OP.MA, 4, OP.HTL, 2));
@@ -318,13 +318,13 @@ describe("CPU", () => {
             memory.set(4, -3n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.multipliedQuotientRegister).toBe(6n);
             expect(cpu.numberRegister).toBe(BigInt.asUintN(40, -3n));
             expect(cpu.accumulator).toBe(0n);
             expect(cpu.overflowToggle).toBe(false);
         })
-        it("Handles negative in multiplicand only", () => {
+        it("Handles negative in multiplicand only", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.RA, 3));
             memory.set(1, buildWord(OP.MA, 4, OP.HTL, 2));
@@ -333,13 +333,13 @@ describe("CPU", () => {
             memory.set(4, 3n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.multipliedQuotientRegister).toBe(BigInt.asUintN(40, -6n) & ThirtyNineBitMask);
             expect(cpu.numberRegister).toBe(3n);
             expect(cpu.accumulator).toBe(FortyBitMask);
             expect(cpu.overflowToggle).toBe(false);
         });
-        it("Handles negative in multiplier only", () => {
+        it("Handles negative in multiplier only", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.RA, 3));
             memory.set(1, buildWord(OP.MA, 4, OP.HTL, 2));
@@ -348,13 +348,13 @@ describe("CPU", () => {
             memory.set(4, -3n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.multipliedQuotientRegister).toBe(BigInt.asUintN(40, -6n) & ThirtyNineBitMask);
             expect(cpu.numberRegister).toBe(BigInt.asUintN(40, -3n));
             expect(cpu.accumulator).toBe(FortyBitMask);
             expect(cpu.overflowToggle).toBe(false);
         });
-        it("Uses value already in accumulator", () => {
+        it("Uses value already in accumulator", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.RA, 3));
             memory.set(1, buildWord(OP.MA, 4, OP.HTL, 2));
@@ -363,13 +363,13 @@ describe("CPU", () => {
             memory.set(4, 3n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.multipliedQuotientRegister).toBe(10n);
             expect(cpu.numberRegister).toBe(3n);
             expect(cpu.accumulator).toBe(0n);
             expect(cpu.overflowToggle).toBe(false);
         });
-        it("Result spans accumulator and MQ", () => {
+        it("Result spans accumulator and MQ", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.RA, 3));
             memory.set(1, buildWord(OP.MA, 4, OP.HTL, 2));
@@ -378,7 +378,7 @@ describe("CPU", () => {
             memory.set(4, 2n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.multipliedQuotientRegister).toBe(0n);
             expect(cpu.numberRegister).toBe(2n);
             expect(cpu.accumulator).toBe(1n);
@@ -388,7 +388,7 @@ describe("CPU", () => {
     describe("D", () => {
         // NOTE: See the comments in CPU._divide on inaccuracy when using a negative divisor
         //       which divides the dividend with no remainder
-        it("Divides", () => {
+        it("Divides", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.D, 3));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
@@ -396,11 +396,11 @@ describe("CPU", () => {
             memory.set(3, 2n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(0n);
             expect(cpu.multipliedQuotientRegister).toBe(3n);
         });
-        it("Reports remainder in accumulator", () => {
+        it("Reports remainder in accumulator", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.D, 3));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
@@ -408,11 +408,11 @@ describe("CPU", () => {
             memory.set(3, 2n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.multipliedQuotientRegister).toBe(2n);
         });
-        it("Handles negatives", () => {
+        it("Handles negatives", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.RA, 4));
             memory.set(1, buildWord(OP.D, 3, OP.HTR, 2));
@@ -421,11 +421,11 @@ describe("CPU", () => {
             memory.set(4, FortyBitMask);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(BigInt.asUintN(40, -2n));
             expect(cpu.multipliedQuotientRegister).toBe(2n);
         });
-        it("Handles negative in divisor only", () => {
+        it("Handles negative in divisor only", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.D, 3));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
@@ -433,11 +433,11 @@ describe("CPU", () => {
             memory.set(3, -2n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(BigInt.asUintN(40, -2n));
             expect(cpu.multipliedQuotientRegister).toBe(BigInt.asUintN(40, -4n));
         });
-        it("Handles negative in dividend only", () => {
+        it("Handles negative in dividend only", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.RA, 4));
             memory.set(1, buildWord(OP.D, 3, OP.HTR, 2));
@@ -446,36 +446,36 @@ describe("CPU", () => {
             memory.set(4, FortyBitMask);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(0n);
             expect(cpu.multipliedQuotientRegister).toBe(BigInt.asUintN(40, -3n));
         });
     });
     describe("ST", () => {
-        it("Stores to memory", () => {
+        it("Stores to memory", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.ST, 4));
             memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
             memory.set(2, 1234n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(memory.get(4)).toBe(1234n);
         });
     });
     describe("SAL", () => {
-        it("Stores bits 7-19", () => {
+        it("Stores bits 7-19", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.SAL, 4));
             memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
             memory.set(2, FortyBitMask);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             const bits7To19 = 0b0000_0001_1111_1111_1111_0000_0000_0000_0000_0000n;
             expect(memory.get(4)).toBe(bits7To19);
         });
-        it("Does not modify other bits", () => {
+        it("Does not modify other bits", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.SAL, 4));
             memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
@@ -483,23 +483,23 @@ describe("CPU", () => {
             memory.set(4, 0b0101_0101_0101_0101_0101_0101_0101_0101_0101_0101n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(memory.get(4)).toBe(0b0101_0101_1111_1111_1111_0101_0101_0101_0101_0101n);
         });
     });
     describe("SAR", () => {
-        it("Stores bits 28-39", () => {
+        it("Stores bits 28-39", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.SAR, 4));
             memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
             memory.set(2, FortyBitMask);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             const bits28To39 = 0b0000_0000_0000_0000_0000_0000_0000_1111_1111_1111n;
             expect(memory.get(4)).toBe(bits28To39);
         });
-        it("Does not modify other bits", () => {
+        it("Does not modify other bits", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.SAR, 4));
             memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
@@ -507,41 +507,41 @@ describe("CPU", () => {
             memory.set(4, 0b0101_0101_0101_0101_0101_0101_0101_0101_0101_0101n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             const bits28To39 = 0b0101_0101_0101_0101_0101_0101_0101_1111_1111_1111n;
             expect(memory.get(4)).toBe(bits28To39);
         });
     });
     describe("STQ", () => {
-        it("Stores MQ to memory", () => {
+        it("Stores MQ to memory", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.STQ, 3));
             memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
             memory.set(2, 123n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(123n);
             expect(cpu.numberRegister).toBe(123n);
             expect(memory.get(3)).toBe(123n);
         });
     });
     describe("SNQ", () => {
-        it("Stores MQ complement to memory", () => {
+        it("Stores MQ complement to memory", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.SNQ, 3));
             memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
             memory.set(2, 123n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(BigInt.asUintN(40, -123n));
             expect(cpu.numberRegister).toBe(123n);
             expect(memory.get(3)).toBe(BigInt.asUintN(40, -123n));
         });
     });
     describe("AQS", () => {
-        it("Adds MQ to A and stores result", () => {
+        it("Adds MQ to A and stores result", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.RA, 3));
             memory.set(1, buildWord(OP.AQS, 4, OP.HTR, 4));
@@ -549,13 +549,13 @@ describe("CPU", () => {
             memory.set(3, 456n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(579n);
             expect(cpu.numberRegister).toBe(123n)
             expect(memory.get(4)).toBe(579n);
             expect(cpu.overflowToggle).toBe(false);
         });
-        it("Sets overflow if it occurred", () => {
+        it("Sets overflow if it occurred", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.RA, 3));
             memory.set(1, buildWord(OP.AQS, 4, OP.HTR, 4));
@@ -563,7 +563,7 @@ describe("CPU", () => {
             memory.set(3, 0o07777777777777n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(1n << 39n);
             expect(cpu.numberRegister).toBe(1n);
             expect(memory.get(4)).toBe(1n << 39n);
@@ -571,7 +571,7 @@ describe("CPU", () => {
         });
     });
     describe("SQS", () => {
-        it("Subtracts MQ from A and stores result", () => {
+        it("Subtracts MQ from A and stores result", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.RA, 3));
             memory.set(1, buildWord(OP.SQS, 4, OP.HTR, 4));
@@ -579,7 +579,7 @@ describe("CPU", () => {
             memory.set(3, 456n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(333n);
             expect(cpu.numberRegister).toBe(123n);
             expect(memory.get(4)).toBe(333n);
@@ -587,237 +587,237 @@ describe("CPU", () => {
         });
     });
     describe("CLC", () => {
-        it("Shifts left", () => {
+        it("Shifts left", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.CLC, 1));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 1n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(2n);
             expect(cpu.multipliedQuotientRegister).toBe(0n);
         });
-        it("Clears LM before shifting", () => {
+        it("Clears LM before shifting", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.LM, 2));
             memory.set(1, buildWord(OP.CLC, 1, OP.HTR, 2));
             memory.set(2, 1n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(2n);
             expect(cpu.multipliedQuotientRegister).toBe(0n);
         });
-        it("Shift of 40 swaps MQ and Accumulator", () => {
+        it("Shift of 40 swaps MQ and Accumulator", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.CLC, 40));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 123n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(0n);
             expect(cpu.multipliedQuotientRegister).toBe(123n);
         });
-        it("Shift of 80 returns to starting position", () => {
+        it("Shift of 80 returns to starting position", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.CLC, 80));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 123n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(123n);
             expect(cpu.multipliedQuotientRegister).toBe(0n);
         });
     });
     describe("LRC", () => {
-        it("Shifts right", () => {
+        it("Shifts right", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.LRC, 1));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 2n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.multipliedQuotientRegister).toBe(0n);
         });
-        it("Clears LM before shifting", () => {
+        it("Clears LM before shifting", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.LM, 2));
             memory.set(1, buildWord(OP.LRC, 1, OP.HTR, 2));
             memory.set(2, 2n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.multipliedQuotientRegister).toBe(0n);
         });
-        it("Performs a power shift and copies sign bit to MQ sign bit", () => {
+        it("Performs a power shift and copies sign bit to MQ sign bit", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.LRC, 1));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 1n << 39n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(3n << 38n);
             expect(cpu.multipliedQuotientRegister).toBe(1n << 39n);
         });
-        it("Skips sign bit of MQ", () => {
+        it("Skips sign bit of MQ", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.LRC, 1));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 1n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(0n);
             expect(cpu.multipliedQuotientRegister).toBe(1n << 38n);
         });
     });
     describe("SRH", () => {
-        it("Shifts accumulator right", () => {
+        it("Shifts accumulator right", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.SRH, 1));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 5n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(2n);
         });
-        it("Leaves MQ untouched", () => {
+        it("Leaves MQ untouched", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.LM, 2));
             memory.set(1, buildWord(OP.SRH, 1, OP.HTR, 2));
             memory.set(2, 2n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.multipliedQuotientRegister).toBe(2n);
         });
     });
     describe("CLH", () => {
-        it("Shifts accumulator and MQ left", () => {
+        it("Shifts accumulator and MQ left", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.LM, 2));
             memory.set(1, buildWord(OP.CLH, 1, OP.HTR, 2));
             memory.set(2, 2n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(4n);
             expect(cpu.multipliedQuotientRegister).toBe(4n);
         });
-        it("Shifts high bit of one register into low bit of the other", () => {
+        it("Shifts high bit of one register into low bit of the other", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.LM, 2));
             memory.set(1, buildWord(OP.CLH, 1, OP.HTR, 2));
             memory.set(2, 1n << 39n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.multipliedQuotientRegister).toBe(1n);
         });
     });
     describe("LRH", () => {
-        it("Shifts right", () => {
+        it("Shifts right", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.LRH, 1));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 2n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.multipliedQuotientRegister).toBe(0n);
         });
-        it("Does not clear LM before shifting", () => {
+        it("Does not clear LM before shifting", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.LM, 2));
             memory.set(1, buildWord(OP.LRH, 1, OP.HTR, 2));
             memory.set(2, 2n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.multipliedQuotientRegister).toBe(1n);
         });
-        it("Performs a power shift and copies sign bit to MQ sign bit", () => {
+        it("Performs a power shift and copies sign bit to MQ sign bit", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.LRH, 1));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 1n << 39n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(3n << 38n);
             expect(cpu.multipliedQuotientRegister).toBe(1n << 39n);
         });
-        it("Skips sign bit of MQ", () => {
+        it("Skips sign bit of MQ", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.LRH, 1));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 1n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(0n);
             expect(cpu.multipliedQuotientRegister).toBe(1n << 38n);
         });
     });
     describe("LLH", () => {
-        it("Shifts left", () => {
+        it("Shifts left", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.LM, 2));
             memory.set(1, buildWord(OP.LLH, 1, OP.HTR, 2));
             memory.set(2, 2n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(4n);
             expect(cpu.multipliedQuotientRegister).toBe(4n);
         });
-        it("Connects bit 1 of MQ to bit 39 of accumulator", () => {
+        it("Connects bit 1 of MQ to bit 39 of accumulator", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.LLH, 1));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 1n << 38n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.multipliedQuotientRegister).toBe(0n);
         });
-        it("Does not change MQ sign bit", () => {
+        it("Does not change MQ sign bit", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.LLH, 1));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 1n << 39n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(0n);
             expect(cpu.multipliedQuotientRegister).toBe(1n << 39n);
         });
     });
     describe("SEL", () => {
-        it("Selects IO device", () => {
+        it("Selects IO device", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.SEL, IODevice.CardPunchFeed, OP.HTR, 2));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.ioDevice).toBe(IODevice.CardPunchFeed);
         });
     });
     describe("C", () => {
-        it("Copies from card reader", () => {
+        it("Copies from card reader", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.SEL, IODevice.CardReaderPrimaryFeed, OP.C, 2));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
@@ -826,63 +826,63 @@ describe("CPU", () => {
             cardReader.setCard(0, (123n << 40n) | 456n)
 
             const cpu = new CPU(memory, cardReader, new Drums());
-            cpu.go();
+            await cpu.go();
             expect(memory.get(2)).toBe(123n);
             expect(cpu.accumulator).toBe(456n);
         });
-        it("Throws on unimplemented device", () => {
+        it("Throws on unimplemented device", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.SEL, IODevice.AnelexPrinterNoSpace, OP.C, 2));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            expect(cpu.go).toThrow();
+            expect(async () => await cpu.go()).rejects.toThrow();
         });
     });
     describe("CLEAR", () => {
-        it("CLEAR1 clears accumulator", () => {
+        it("CLEAR1 clears accumulator", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.CLEAR1, 0));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 123n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(0n);
         });
-        it("CLEAR2 clears accumulator", () => {
+        it("CLEAR2 clears accumulator", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.CLEAR2, 0));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 123n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(0n);
         });
-        it("CLEAR3 clears accumulator", () => {
+        it("CLEAR3 clears accumulator", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.CLEAR3, 0));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 123n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(0n);
         });
-        it("CLEAR4 clears accumulator", () => {
+        it("CLEAR4 clears accumulator", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.CLEAR4, 0));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
             memory.set(2, 123n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(0n);
         });
     });
     describe("PI", () => {
-        it("Takes logical intersection", () => {
+        it("Takes logical intersection", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.PI, 3));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
@@ -890,13 +890,13 @@ describe("CPU", () => {
             memory.set(3, 1n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(1n);
             expect(cpu.numberRegister).toBe(1n);
         });
     });
     describe("NI", () => {
-        it("Takes logical intersection of logical complement", () => {
+        it("Takes logical intersection of logical complement", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.NI, 3));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
@@ -904,35 +904,35 @@ describe("CPU", () => {
             memory.set(3, 1n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.accumulator).toBe(2n);
             expect(cpu.numberRegister).toBe(1n);
         });
     });
     describe("HTL", () => {
-        it("Halts left", () => {
+        it("Halts left", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.HTL, 5, OP.BLANK, 0));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.nextInstructionRegister).toBe(5);
             expect(cpu.currentCommand).toBe(CurrentCommand.Left);
         });
     });
     describe("HTR", () => {
-        it("Halts right", () => {
+        it("Halts right", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.HTR, 5, OP.BLANK, 0));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
             expect(cpu.nextInstructionRegister).toBe(5);
             expect(cpu.currentCommand).toBe(CurrentCommand.Right);
         });
     });
     describe("RD", () => {
-        it("Reads drum into memory", () => {
+        it("Reads drum into memory", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.RD, 3));
             memory.set(1, buildWord(OP.HTL, 1, OP.BLANK, 0));
@@ -945,7 +945,7 @@ describe("CPU", () => {
             drums.setWord(0, 1, 2, 8, 1n);
 
             const cpu = new CPU(memory, new CardReader(), drums);
-            cpu.go();
+            await cpu.go();
 
             expect(memory.get(3)).toBe(3n);
             expect(memory.get(4)).toBe(1n);
@@ -954,7 +954,7 @@ describe("CPU", () => {
         });
     });
     describe("WD", () => {
-        it("Writes memory into drum", () => {
+        it("Writes memory into drum", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.WD, 3));
             memory.set(1, buildWord(OP.HTL, 1, OP.BLANK, 0));
@@ -967,7 +967,7 @@ describe("CPU", () => {
             const drums = new Drums();
 
             const cpu = new CPU(memory, new CardReader(), drums);
-            cpu.go();
+            await cpu.go();
 
             expect(drums.getWord(0, 1, 2, 5)).toBe(3n);
             expect(drums.getWord(0, 1, 2, 6)).toBe(1n);
@@ -976,24 +976,24 @@ describe("CPU", () => {
         });
     });
     describe("SRC", () => {
-        it("Clears MQ", () => {
+        it("Clears MQ", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 1, OP.SRC, 1));
             memory.set(1, buildWord(OP.HTL, 1, OP.BLANK, 0));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
 
             expect(cpu.multipliedQuotientRegister).toBe(0n);
         });
-        it("Shfits accumulator right", () => {
+        it("Shfits accumulator right", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.SRC, 2));
             memory.set(1, buildWord(OP.HTL, 1, OP.BLANK, 0));
             memory.set(2, 8n);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
-            cpu.go();
+            await cpu.go();
 
             expect(cpu.accumulator).toBe(2n);
         });
