@@ -3,7 +3,8 @@
         "strictNullChecks": true,
         "lib": [
             "ES2022",
-            "WebWorker"
+            "WebWorker",
+            "DOM",
         ],
         "target": "ES2022",
         "module": "ES2022",
