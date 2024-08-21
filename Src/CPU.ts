@@ -1,6 +1,7 @@
 import { CardReader } from "./CardReader.js";
 import { Drums } from "./Drum.js";
 import { Memory } from "./Memory.js";
+import { MatchPatternMask, StationControlRegister, TTypewriterMessage, WorkerCommand } from "./MultipleTypewriterCommunication.js";
 import { OP } from "./OP.js";
 import { FortyBitMask, NextInstructionRegister, Register } from "./Register.js";
 
@@ -58,6 +59,7 @@ export class CPU {
 
     private _clockBuffer: Uint16Array | undefined;
     private _clockWorker: Worker | undefined;
+    private _typewriterWorker: SharedWorker | undefined;
 
     // The Overflow Toggle is turned on when an overflow occurs and remains on until one of the operations 003 or 007 turns it off.
     private _overflowToggle: boolean = false;
@@ -87,7 +89,15 @@ export class CPU {
         addresses.forEach(address => this._breakpoints.delete(address));
     }
 
-    constructor(memory: Memory, cardReader: CardReader, drums: Drums, hasClock: boolean = false) {
+    private _eventData: MessageEvent<any> | undefined = undefined;
+
+    constructor(
+        memory: Memory,
+        cardReader: CardReader,
+        drums: Drums,
+        hasClock: boolean = false,
+        typewriterInterface: boolean = false
+    ) {
         this._memory = memory;
         this._cardReader = cardReader;
         this._drums = drums;
@@ -95,6 +105,10 @@ export class CPU {
             this._clockBuffer = new Uint16Array(new SharedArrayBuffer(2));
             this._clockWorker = new Worker("./Src/Clock.js");
             this._clockWorker.postMessage(this._clockBuffer);
+        }
+        if (typewriterInterface) {
+            this._typewriterWorker = new SharedWorker("./Src/TypewriterWorker.js", { type: "module" });
+            this._typewriterWorker.port.onmessage = event => this._eventData = event;
         }
     }
 
@@ -735,6 +749,142 @@ export class CPU {
                 this._currentCommand = CurrentCommand.Right;
                 transferExecuted = true;
                 break;
+            case OP.WRITE_LINE_BUFFER:
+                {
+                    if (!this._typewriterWorker) {
+                        throw new Error("Typewriter worker is required for this opcode");
+                    }
+
+                    const lineBuffer = new StationControlRegister(this._accumulator.value).BN;
+
+                    const message: TTypewriterMessage = {
+                        command: WorkerCommand.BufferTransmission,
+                        lineBuffer,
+                    }
+
+                    const writeMessage: TTypewriterMessage = {
+                        command: WorkerCommand.WriteLineBuffer,
+                        lineBuffer,
+                        data: [...this._memory.slice(data, data + 81)].map(value => Number(value)),
+                    };
+
+                    let canWrite = false;
+                    do {
+                        this._eventData = undefined;
+                        this._typewriterWorker.port.postMessage(message);
+
+                        const eventData = await this._waitForEventMessage();
+
+                        canWrite = eventData.data === true;
+
+                    } while (!canWrite);
+
+                    this._typewriterWorker.port.postMessage(writeMessage);
+                }
+                break;
+            case OP.READ_LINE_BUFFER:
+                {
+                    if (!this._typewriterWorker) {
+                        throw new Error("Typewriter worker is required for this opcode");
+                    }
+
+                    const message: TTypewriterMessage = {
+                        command: WorkerCommand.ReadLineBuffer,
+                        lineBuffer: new StationControlRegister(this._accumulator.value).BN,
+                    };
+
+                    this._eventData = undefined;
+                    this._typewriterWorker.port.postMessage(message);
+
+                    const eventData = await this._waitForEventMessage();
+
+                    for (let i = 0; i < 81; i++) {
+                        this._memory.set(data + i, BigInt(eventData.data[i]));
+                    }
+                }
+                break;
+            case OP.WRITE_SCR:
+                {
+                    if (!this._typewriterWorker) {
+                        throw new Error("Typewriter worker is required for this opcode");
+                    }
+                    const mask = new StationControlRegister(this._memory.get(data));
+                    const newValues = new StationControlRegister(this._accumulator.value);
+                    const message: TTypewriterMessage = {
+                        command: WorkerCommand.SetControlRegister, update: {
+                            F: mask.F ? newValues.F : undefined,
+                            EN: mask.EN ? newValues.EN : undefined,
+                            DS: mask.DS ? newValues.DS : undefined,
+                            RO: mask.RO ? newValues.RO : undefined,
+                            TL: mask.TL ? newValues.TL : undefined,
+                            CL: mask.CL ? newValues.CL : undefined,
+                            SU: mask.SU ? newValues.SU : undefined,
+                            BN: mask.BN === 0xF ? newValues.BN : undefined,
+                            ON: mask.ON ? newValues.ON : undefined,
+                            OF: mask.OF ? newValues.OF : undefined,
+                            TC: mask.TC ? newValues.TC : undefined,
+                            RI: mask.RI ? newValues.RI : undefined,
+                            RC: mask.RC ? newValues.RC : undefined,
+                            EJ: mask.EJ ? newValues.EJ : undefined,
+                            TO: mask.TO ? newValues.TO : undefined,
+                        },
+                        stationNumber: Number(this._accumulator.value & 7n),
+                    };
+                    this._typewriterWorker.port.postMessage(message);
+                }
+                break;
+            case OP.READ_SCR:
+                {
+                    if (!this._typewriterWorker) {
+                        throw new Error("Typewriter worker is required for this opcode");
+                    }
+
+                    const message: TTypewriterMessage = { command: WorkerCommand.GetControlRegister, station: Number(this._accumulator.value & 7n) };
+                    this._eventData = undefined;
+                    this._typewriterWorker.port.postMessage(message);
+                    const eventData = await this._waitForEventMessage();
+
+                    this._accumulator.value = BigInt(eventData.data);
+                }
+                break;
+            case OP.MATCH_SCR:
+                {
+                    if (!this._typewriterWorker) {
+                        throw new Error("Typewriter worker is required for this opcode");
+                    }
+
+                    const message: TTypewriterMessage = {
+                        command: WorkerCommand.MatchControlRegister,
+                        pattern: this._memory.get(data) & MatchPatternMask,
+                    };
+                    this._eventData = undefined;
+                    this._typewriterWorker.port.postMessage(message);
+                    const eventData = await this._waitForEventMessage();
+                    if (eventData.data === undefined) {
+                        this._accumulator.value = 1n << 39n;
+                    } else {
+                        this._accumulator.value = BigInt(eventData.data);
+                    }
+                }
+            case OP.MISMATCH_SCR:
+                {
+                    if (!this._typewriterWorker) {
+                        throw new Error("Typewriter worker is required for this opcode");
+                    }
+
+                    const message: TTypewriterMessage = {
+                        command: WorkerCommand.MismatchControlRegister,
+                        pattern: this._memory.get(data) & MatchPatternMask,
+                    };
+                    this._eventData = undefined;
+                    this._typewriterWorker.port.postMessage(message);
+                    const eventData = await this._waitForEventMessage();
+                    if (eventData.data === undefined) {
+                        this._accumulator.value = 1n << 39n;
+                    } else {
+                        this._accumulator.value = BigInt(eventData.data);
+                    }
+                }
             case OP.TFL:
             case OP.TFR:
             case OP.T1L:
@@ -784,6 +934,13 @@ export class CPU {
         }
 
         return transferExecuted;
+    }
+
+    private async _waitForEventMessage(): Promise<MessageEvent<any>> {
+        while (this._eventData === undefined) {
+            await new Promise(resolve => setTimeout(resolve, 0));
+        }
+        return this._eventData;
     }
 }
 
