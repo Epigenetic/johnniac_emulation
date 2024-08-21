@@ -1,3 +1,4 @@
+import { ShiftLowerCase, ShiftUpperCase } from "./Characters.js";
 import { FortyBitMask } from "./Register.js";
 
 export class MultipleTypewriterCommunication {
@@ -99,10 +100,10 @@ class LineBuffer {
     }
 
     public writeCharacter6Bit(character: number): void {
-        if (character === 0o111_110) {
+        if (character === ShiftUpperCase) {
             this._uppercase = true;
             return;
-        } else if (character === 0o111_111) {
+        } else if (character === ShiftLowerCase) {
             this._uppercase = false
             return;
         }
