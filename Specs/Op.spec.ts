@@ -451,6 +451,20 @@ describe("CPU", () => {
             expect(cpu.multipliedQuotientRegister).toBe(BigInt.asUintN(40, -3n));
         });
     });
+    describe("DS", () => {
+        it("Divides short dividend", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.RA, 2, OP.DS, 3));
+            memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
+            memory.set(2, 1n);
+            memory.set(3, 2n);
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            await cpu.go();
+            expect(cpu.accumulator).toBe(0n);
+            expect(cpu.multipliedQuotientRegister).toBe(1n << 38n);
+        });
+    });
     describe("ST", () => {
         it("Stores to memory", async () => {
             const memory = new Memory();

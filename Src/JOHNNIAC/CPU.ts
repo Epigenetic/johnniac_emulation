@@ -488,6 +488,12 @@ export class CPU {
                 // it is added to the low order positions of the product,
                 this._multiply(data, false);
                 break;
+            case OP.DS:
+                // Clear MQ and divide the number in the Accumulator by the number specified in the Store.
+                // Put the Quotient in MQ and the Remainder *2^39 in the Accumulator.
+                this._multipliedQuotientRegister.value = 0n;
+                this._divide(data, false);
+                break;
             case OP.D:
                 {
                     // Divide the double precision dividend in A and MQ by the single precision divisor specified by the address. Put the Quotient in the MQ register and the Remainder * 2+39 in the Accumulator. 
@@ -907,7 +913,6 @@ export class CPU {
             case OP.MNA:
             case OP.MB:
             case OP.MNB:
-            case OP.DS:
             case OP.DNS:
             case OP.DN:
             case OP.SOL:
