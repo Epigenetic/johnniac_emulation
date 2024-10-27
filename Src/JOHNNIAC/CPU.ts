@@ -1,7 +1,7 @@
-import { CardReader } from "./CardReader.js";
-import { Drums } from "./Drum.js";
-import { Memory } from "./Memory.js";
-import { MatchPatternMask, StationControlRegister, TTypewriterMessage, WorkerCommand } from "./MultipleTypewriterCommunication.js";
+import { CardReader } from "./Components/CardReader.js";
+import { Drums } from "./Components/Drum.js";
+import { Memory } from "./Components/Memory.js";
+import { MatchPatternMask, StationControlRegister, TTypewriterMessage, WorkerCommand } from "../MTC/MultipleTypewriterCommunication.js";
 import { OP } from "./OP.js";
 import { FortyBitMask, NextInstructionRegister, Register } from "./Register.js";
 
@@ -103,11 +103,11 @@ export class CPU {
         this._drums = drums;
         if (hasClock) {
             this._clockBuffer = new Uint16Array(new SharedArrayBuffer(2));
-            this._clockWorker = new Worker("./Src/Clock.js");
+            this._clockWorker = new Worker("/Src/JOHNNIAC/Components/Clock.js");
             this._clockWorker.postMessage(this._clockBuffer);
         }
         if (typewriterInterface) {
-            this._typewriterWorker = new SharedWorker("./Src/TypewriterWorker.js", { type: "module" });
+            this._typewriterWorker = new SharedWorker("/Src/MTC/TypewriterWorker.js", { type: "module" });
             this._typewriterWorker.port.onmessage = event => this._eventData = event;
         }
     }

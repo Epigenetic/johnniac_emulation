@@ -2,16 +2,18 @@ import { TTypewriterMessage, MultipleTypewriterCommunication, WorkerCommand } fr
 
 declare var self: SharedWorkerGlobalScope;
 
+const stationPortMap:Record<number,MessagePort> = {};
+
 self.onconnect = event => {
     const port = event.ports[0]!;
     port.onmessage = event => {
-        port.postMessage(messageHandler(event));
+        port.postMessage(messageHandler(event, port));
     };
 }
 
 const multipleTypewriterCommunication = new MultipleTypewriterCommunication();
 
-function messageHandler(event: MessageEvent<TTypewriterMessage>) {
+function messageHandler(event: MessageEvent<TTypewriterMessage>, port: MessagePort) {
     const { command } = event.data;
 
     switch (command) {
@@ -45,12 +47,12 @@ function messageHandler(event: MessageEvent<TTypewriterMessage>) {
                     register.DS = scr.DS;
                 if (scr.RO !== undefined)
                     register.RO = scr.RO;
+                if (scr.TO !== undefined)
+                    register.TO = scr.TO;
                 if (scr.TL !== undefined)
                     register.TL = scr.TL;
                 if (scr.CL !== undefined)
                     register.CL = scr.CL;
-                if (scr.SU !== undefined)
-                    register.SU = scr.SU;
                 if (scr.BN !== undefined)
                     register.BN = scr.BN;
                 if (scr.ON !== undefined)
@@ -65,10 +67,49 @@ function messageHandler(event: MessageEvent<TTypewriterMessage>) {
                     register.RC = scr.RC;
                 if (scr.EJ !== undefined)
                     register.EJ = scr.EJ;
-                if (scr.TO !== undefined)
-                    register.TO = scr.TO;
+                if (scr.SU !== undefined) {
+                    register.SU = scr.SU;
+                }
+
+                if (register.SU) {
+                    register.F = false;
+                    register.EN = false;
+                    register.DS = false;
+                    register.RO = false;
+                    register.TO = false;
+                    // TODO - when TL is set and SU is set, SU waits for TL to complete
+                    register.TL = false;
+                    register.CL = false;
+                    register.OF = false;
+                    register.TC = false;
+                    register.RI = false;
+                    register.RC = false;
+                    register.EJ = false;
+                }
+                if (register.TL) {
+                    register.TO = false;
+                }
 
                 multipleTypewriterCommunication.setStationControlRegister(event.data.stationNumber, register);
+                if (register.SU) {
+                    return { switchToUser: true };
+                }
+                if (register.EN) {
+                    return { enable: true };
+                }
+                if (register.DS) {
+                    return { disable: true };
+                }
+                if (register.TL) {
+                    const lineBuffer = multipleTypewriterCommunication.getLineBuffer(register.BN);
+                    const characters = lineBuffer.getCharactersToTransmit();
+                    for (let character of characters) {
+                        stationPortMap[register.stationNumber]?.postMessage({character})
+                    }
+                    register.TL = false;
+                    register.TO = true;
+                    multipleTypewriterCommunication.setStationControlRegister(event.data.stationNumber, register);
+                }
             }
             break;
         case WorkerCommand.BufferTransmission:
@@ -81,5 +122,24 @@ function messageHandler(event: MessageEvent<TTypewriterMessage>) {
             return multipleTypewriterCommunication.findMatchingRegister(event.data.pattern);
         case WorkerCommand.MismatchControlRegister:
             return multipleTypewriterCommunication.findMismatchRegister(event.data.pattern);
+        case WorkerCommand.JOSSTypewriterMessage:
+            {
+                const stationControlRegister = multipleTypewriterCommunication.getStationControlRegister(event.data.station);
+                if(stationPortMap[event.data.station]===undefined){
+                    stationPortMap[event.data.station]=port;
+                }
+
+                if (event.data.on !== undefined) {
+                    stationControlRegister.ON = event.data.on;
+                }
+                if (event.data.off !== undefined) {
+                    stationControlRegister.OF = event.data.off;
+                }
+                if (event.data.character) {
+                    const lineBuffer = multipleTypewriterCommunication.getLineBuffer(stationControlRegister.BN);
+                    lineBuffer.writeCharacter6Bit(event.data.character);
+                }
+            }
+
     }
 }

@@ -1,4 +1,4 @@
-import { FortyBitMask } from "./Register.js";
+import { FortyBitMask } from "../Register.js";
 
 export class CardReader {
     private _cards: bigint[] = [];

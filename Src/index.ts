@@ -1,7 +1,7 @@
-import { CPU } from "./CPU.js";
-import { CardStackBuilder } from "./CardStackBuilder.js";
-import { Drums } from "./Drum.js";
-import { j136e } from "./J136E-Modified.js";
+import { CPU } from "./JOHNNIAC/CPU.js";
+import { CardStackBuilder } from "./JOHNNIAC/CardStackBuilder.js";
+import { Drums } from "./JOHNNIAC/Components/Drum.js";
+import { j136e } from "./Programs/J136E-Modified.js";
 
 const builder = new CardStackBuilder();
 // Region defs

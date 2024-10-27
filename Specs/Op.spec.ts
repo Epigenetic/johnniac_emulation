@@ -1,9 +1,9 @@
-import { Memory } from "../Src/Memory.js";
-import { OP } from "../Src/OP.js";
-import { CPU, CurrentCommand, IODevice } from "../Src/CPU.js";
-import { CardReader } from "../Src/CardReader.js";
-import { FortyBitMask } from "../Src/Register.js";
-import { Drums } from "../Src/Drum.js";
+import { Memory } from "../Src/JOHNNIAC/Components/Memory.js";
+import { OP } from "../Src/JOHNNIAC/OP.js";
+import { CPU, CurrentCommand, IODevice } from "../Src/JOHNNIAC/CPU.js";
+import { CardReader } from "../Src/JOHNNIAC/Components/CardReader.js";
+import { FortyBitMask } from "../Src/JOHNNIAC/Register.js";
+import { Drums } from "../Src/JOHNNIAC/Components/Drum.js";
 
 const ThirtyNineBitMask = ((1n << 39n) - 1n);
 

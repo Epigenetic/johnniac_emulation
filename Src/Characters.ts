@@ -9,7 +9,6 @@ export const SixBitCharactersLowercase = {
 
     "8": 0b001_000,
     "9": 0b001_001,
-    Space: 0b001_110,
 
     ";": 0b010_000,
     "a": 0b010_001,
@@ -22,10 +21,7 @@ export const SixBitCharactersLowercase = {
 
     "h": 0b011_000,
     "i": 0b011_001,
-    TakeControlOut: 0b011_010,
     ".": 0b011_011,
-    EjectCarriageReturnAndEndOfMessage: 0b011_110,
-    EjectAndCarriageReturn: 0b011_111,
     "⋅": 0b100_000,
     "j": 0b100_001,
     "k": 0b100_010,
@@ -37,12 +33,8 @@ export const SixBitCharactersLowercase = {
 
     "q": 0b101_000,
     "r": 0b101_001,
-    CarriageReturnAndEndOfMessage: 0b101_010,
     "=": 0b101_011,
     "-": 0b101_100,
-    EndOfMessage: 0b101_101,
-    CarriageReturn: 0b101_101,
-    BackSpace: 0b101_111,
 
     "0": 0b110_000,
     "/": 0b110_001,
@@ -57,13 +49,21 @@ export const SixBitCharactersLowercase = {
     "z": 0b111_001,
     ",": 0b111_011,
     "+": 0b111_100,
-    Tab: 0b111_101,
 };
 
 export const SixBitCharactersLowercaseReverse: Record<number, string> = reverseObject(SixBitCharactersLowercase);
 
 export const ShiftUpperCase = 0b111_110;
 export const ShiftLowerCase = 0b111_111;
+export const Tab = 0b111_101;
+export const EndOfMessage = 0b101_101;
+export const CarriageReturn = 0b101_101;
+export const Backspace = 0b101_111;
+export const CarriageReturnAndEndOfMessage = 0b101_010;
+export const EjectCarriageReturnAndEndOfMessage = 0b011_110;
+export const EjectAndCarriageReturn = 0b011_111;
+export const TakeControlOut = 0b011_010;
+export const Space = 0b001_110;
 
 export const SixBitCharactersUppercase = {
     "'": 0b000_001,
@@ -126,4 +126,12 @@ function reverseObject(object: Object) {
         Object.entries(object)
             .map(([key, value]) => [value, key])
     );
+}
+
+export function validateCharacter(character: number) {
+    if (character in SixBitCharactersLowercaseReverse)
+        return true;
+    if (character in SixBitCharactersUppercaseReverse)
+        return true;
+    return false;
 }

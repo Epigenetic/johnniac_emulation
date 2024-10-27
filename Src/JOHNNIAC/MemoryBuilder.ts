@@ -1,4 +1,4 @@
-import { Memory } from "./Memory.js";
+import { Memory } from "./Components/Memory.js";
 import { OP } from "./OP.js";
 
 /**

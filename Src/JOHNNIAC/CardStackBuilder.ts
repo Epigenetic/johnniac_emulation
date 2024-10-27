@@ -1,4 +1,4 @@
-import { CardReader } from "./CardReader.js";
+import { CardReader } from "./Components/CardReader.js";
 
 export class CardStackBuilder {
     private _index = 0;

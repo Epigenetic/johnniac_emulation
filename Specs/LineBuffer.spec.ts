@@ -1,4 +1,4 @@
-import { MultipleTypewriterCommunication } from "../Src/MultipleTypewriterCommunication"
+import { MultipleTypewriterCommunication } from "../Src/MTC/MultipleTypewriterCommunication"
 
 describe("LineBuffer", () => {
     describe("writeCharacter7Bit", () => {

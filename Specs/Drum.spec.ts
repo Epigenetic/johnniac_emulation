@@ -1,4 +1,4 @@
-import { Drums } from "../Src/Drum.js"
+import { Drums } from "../Src/JOHNNIAC/Components/Drum.js"
 
 describe("Drums", () => {
     describe("getWord", () => {

@@ -1,4 +1,4 @@
-import { MatchPatternMask, MultipleTypewriterCommunication, StationControlRegister } from "../Src/MultipleTypewriterCommunication";
+import { MatchPatternMask, MultipleTypewriterCommunication, StationControlRegister } from "../Src/MTC/MultipleTypewriterCommunication";
 
 describe("MultipleTypewriterCommunication", () => {
     describe("getLineBuffer", () => {

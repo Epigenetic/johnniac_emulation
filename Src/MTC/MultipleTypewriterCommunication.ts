@@ -1,5 +1,5 @@
-import { ShiftLowerCase, ShiftUpperCase } from "./Characters.js";
-import { FortyBitMask } from "./Register.js";
+import { ShiftLowerCase, ShiftUpperCase } from "../Characters.js";
+import { FortyBitMask } from "../JOHNNIAC/Register.js";
 
 export class MultipleTypewriterCommunication {
     private _lineBuffers = [
@@ -119,6 +119,10 @@ class LineBuffer {
 
     public getBuffer(): Uint8Array {
         return this._buffer;
+    }
+
+    public getCharactersToTransmit(): Uint8Array {
+        return this._buffer.slice(0, this._pointer);
     }
 }
 
@@ -281,6 +285,7 @@ export enum WorkerCommand {
     BufferTransmission,
     MatchControlRegister,
     MismatchControlRegister,
+    JOSSTypewriterMessage,
 }
 
 export type TTypewriterMessage = IGetStationMessage
@@ -289,7 +294,8 @@ export type TTypewriterMessage = IGetStationMessage
     | IWriteLineBufferMessage
     | IBufferTransmissionMessage
     | IMatchScreenRegisterMessage
-    | IMismatchScreenRegisterMessage;
+    | IMismatchScreenRegisterMessage
+    | IJOSSTypewriterMessage;
 export type TStationRegisterRequest = Omit<Partial<IStationControlRegister>, "stationNumber">;
 
 interface ITypewriterMessage {
@@ -332,4 +338,12 @@ interface IMatchScreenRegisterMessage extends ITypewriterMessage {
 interface IMismatchScreenRegisterMessage extends ITypewriterMessage {
     command: WorkerCommand.MismatchControlRegister;
     pattern: bigint;
+}
+
+interface IJOSSTypewriterMessage extends ITypewriterMessage {
+    command: WorkerCommand.JOSSTypewriterMessage;
+    station: number;
+    on?: true;
+    off?: true;
+    character?: number;
 }

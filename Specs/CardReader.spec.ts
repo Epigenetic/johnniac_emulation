@@ -1,4 +1,4 @@
-import { CardReader } from "../Src/CardReader.js"
+import { CardReader } from "../Src/JOHNNIAC/Components/CardReader.js"
 
 describe("CardReader", () => {
     it("Splits card into two words", () => {
