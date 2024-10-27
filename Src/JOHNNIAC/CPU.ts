@@ -32,6 +32,9 @@ export class CPU {
     public get accumulator() {
         return this._accumulator.value;
     }
+    public set accumulator(value: bigint) {
+        this._accumulator.value = value;
+    }
     public get multipliedQuotientRegister() {
         return this._multipliedQuotientRegister.value;
     }
