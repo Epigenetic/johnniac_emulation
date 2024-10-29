@@ -425,6 +425,19 @@ describe("CPU", () => {
             expect(cpu.accumulator).toBe(BigInt.asUintN(40, -2n));
             expect(cpu.multipliedQuotientRegister).toBe(2n);
         });
+        it("Handles negatives with remainders", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.LM, 2, OP.RA, 4));
+            memory.set(1, buildWord(OP.D, 3, OP.HTR, 2));
+            memory.set(2, -5n);
+            memory.set(3, -2n);
+            memory.set(4, FortyBitMask);
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            await cpu.go();
+            expect(cpu.accumulator).toBe(BigInt.asUintN(40, -1n));
+            expect(cpu.multipliedQuotientRegister).toBe(2n);
+        });
         it("Handles negative in divisor only", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.D, 3));
