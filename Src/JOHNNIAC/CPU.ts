@@ -258,16 +258,7 @@ export class CPU {
         }
 
         // The number in A and MQ is shifted left one place, skipping the sign bit of MQ register which contains the sign of the Quotient.
-        const mqBit = (this._multipliedQuotientRegister.value >> 38n) & 1n;
-        const mqSign = this._multipliedQuotientRegister.value >> 39n << 39n;
-        this._accumulator.value <<= 1n;
-        this._accumulator.value |= mqBit;
-        this._multipliedQuotientRegister.value <<= 1n;
-        if (mqSign) {
-            this._multipliedQuotientRegister.value |= mqSign;
-        } else {
-            this._multipliedQuotientRegister.value &= ((1n << 39n) - 1n);
-        }
+        this._powerShiftLeft(1);
 
         for (let i = 0; i < 39; i++) {
             // A trial subtraction of the "Divisor" is made, and a one or a zero is selected to be put in position 39 of MQ to indicate that the "Divisor" goes, or does not go.
@@ -282,16 +273,7 @@ export class CPU {
             // The left shift which follows the generation of a Quotient digit does double duty; it moves the quotient left, bringing the newly formed digit into position 39 and also positions the intermediate remainder;
             // for the next trial subtraction.
             // The trial subtractions are continued until all the 39 digits of the Quotient have been generated.
-            const mqBit = (this._multipliedQuotientRegister.value >> 38n) & 1n;
-            const mqSign = this._multipliedQuotientRegister.value >> 39n << 39n;
-            this._accumulator.value <<= 1n;
-            this._accumulator.value |= mqBit;
-            this._multipliedQuotientRegister.value <<= 1n;
-            if (mqSign) {
-                this._multipliedQuotientRegister.value |= mqSign;
-            } else {
-                this._multipliedQuotientRegister.value &= ((1n << 39n) - 1n);
-            }
+            this._powerShiftLeft(1);
 
             // If the sign bits - agree; one is written in the quotient, and the result of the subtraction is taken.
             if (go) {
@@ -354,6 +336,34 @@ export class CPU {
             this._multipliedQuotientRegister.value &= (1n << 39n) - 1n;
         }
 
+    }
+
+    private _powerShiftLeft(steps: number) {
+        for (let i = 0; i < steps; i++) {
+            const multiplierQuotientBit = (this._multipliedQuotientRegister.value >> 38n) & 1n;
+            const multiplierQuotientSignBit = this._multipliedQuotientRegister.value >> 39n;
+            this._multipliedQuotientRegister.value <<= 1n;
+            if (multiplierQuotientSignBit) {
+                this._multipliedQuotientRegister.value |= 1n << 39n;
+            } else {
+                this._multipliedQuotientRegister.value &= ((1n << 39n) - 1n);
+            }
+            this._accumulator.value <<= 1n;
+            this._accumulator.value |= multiplierQuotientBit;
+        }
+    }
+
+    private _circularShiftLeft(steps: number) {
+        for (let i = 0; i < steps; i++) {
+            const accumulatorBit = ((this._accumulator.value & 0x80_0000_0000n) !== 0n) ? 1n : 0n;
+            const multiplierQuotientBit = ((this._multipliedQuotientRegister.value & 0x80_0000_0000n) !== 0n) ? 1n : 0n;
+
+            this._accumulator.value <<= 1n;
+            this._multipliedQuotientRegister.value <<= 1n;
+
+            this._accumulator.value |= multiplierQuotientBit;
+            this._multipliedQuotientRegister.value |= accumulatorBit;
+        }
     }
 
     private async _executeOp(op: OP, data: number) {
@@ -596,17 +606,7 @@ export class CPU {
                 // The shift moves the information the specified number of places to the left in the ring. 
                 // A shift of 40 places exchanges the words in A and MQ.
                 // A shift of 80 places returns the words to their original locations.
-
-                for (let i = 0; i < data; i++) {
-                    const accumulatorBit = ((this._accumulator.value & 0x80_0000_0000n) !== 0n) ? 1n : 0n;
-                    const multiplierQuotientBit = ((this._multipliedQuotientRegister.value & 0x80_0000_0000n) !== 0n) ? 1n : 0n;
-
-                    this._accumulator.value <<= 1n;
-                    this._multipliedQuotientRegister.value <<= 1n;
-
-                    this._accumulator.value |= multiplierQuotientBit;
-                    this._multipliedQuotientRegister.value |= accumulatorBit;
-                }
+                this._circularShiftLeft(data);
                 break;
             case OP.LRC:
                 // The operation clears MQ before the actual shifting occurs.
@@ -623,16 +623,7 @@ export class CPU {
             case OP.CLH:
                 // The accumulator and MQ are connected into an eighty position ring by connecting position 0 of MR to position 39 of A and position 0 of A to position 39 of MQ.
                 // The shift moves the information the specified number of places to the left in the ring.
-                for (let i = 0; i < data; i++) {
-                    const accumulatorBit = ((this._accumulator.value & 0x80_0000_0000n) !== 0n) ? 1n : 0n;
-                    const multiplierQuotientBit = ((this._multipliedQuotientRegister.value & 0x80_0000_0000n) !== 0n) ? 1n : 0n;
-
-                    this._accumulator.value <<= 1n;
-                    this._multipliedQuotientRegister.value <<= 1n;
-
-                    this._accumulator.value |= multiplierQuotientBit;
-                    this._multipliedQuotientRegister.value |= accumulatorBit;
-                }
+                this._circularShiftLeft(data);
                 break;
             case OP.LRH:
                 this._powerShiftRight(data);
@@ -645,18 +636,7 @@ export class CPU {
                 // No provision for recording overflows is provided.
                 // Zeros are brought into the MQ positions vacated by shifting. 
                 // The MQ sign bit is not changed.
-                for (let i = 0; i < data; i++) {
-                    const multiplierQuotientBit = (this._multipliedQuotientRegister.value >> 38n) & 1n;
-                    const multiplierQuotientSignBit = this._multipliedQuotientRegister.value >> 39n;
-                    this._multipliedQuotientRegister.value <<= 1n;
-                    if (multiplierQuotientSignBit) {
-                        this._multipliedQuotientRegister.value |= 1n << 39n;
-                    } else {
-                        this._multipliedQuotientRegister.value &= 0b0111_1111_1111_1111_1111_1111_1111_1111_1111_1111n;
-                    }
-                    this._accumulator.value <<= 1n;
-                    this._accumulator.value |= multiplierQuotientBit;
-                }
+                this._powerShiftLeft(data);
                 break;
             case OP.SEL:
                 // The operation 10.0 causes the JOHNNIAC to select an input or an output device designated by an integer in the address part.
