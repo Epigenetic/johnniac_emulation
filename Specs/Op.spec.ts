@@ -293,6 +293,53 @@ describe("CPU", () => {
             expect(cpu.overflowToggle).toBe(true);
         })
     });
+    describe("M",()=>{
+        it("Multiplies", async() =>{
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.LM, 2, OP.RA, 3));
+            memory.set(1, buildWord(OP.M, 4, OP.HTL, 2));
+            memory.set(2, 2n);
+            memory.set(3, 0n);
+            memory.set(4, 3n);
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            await cpu.go();
+            expect(cpu.multipliedQuotientRegister).toBe(6n);
+            expect(cpu.numberRegister).toBe(3n);
+            expect(cpu.accumulator).toBe(0n);
+            expect(cpu.overflowToggle).toBe(false);
+        });
+        it("Clears the accumulator", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.LM, 2, OP.RA, 3));
+            memory.set(1, buildWord(OP.M, 4, OP.HTL, 2));
+            memory.set(2, 2n);
+            memory.set(3, 4n);
+            memory.set(4, 3n);
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            await cpu.go();
+            expect(cpu.multipliedQuotientRegister).toBe(6n);
+            expect(cpu.numberRegister).toBe(3n);
+            expect(cpu.accumulator).toBe(0n);
+            expect(cpu.overflowToggle).toBe(false);
+        });
+        it("Result spans accumulator and MQ", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.LM, 2, OP.RA, 3));
+            memory.set(1, buildWord(OP.M, 4, OP.HTL, 2));
+            memory.set(2, 1n << 38n);
+            memory.set(3, 0n);
+            memory.set(4, 2n);
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            await cpu.go();
+            expect(cpu.multipliedQuotientRegister).toBe(0n);
+            expect(cpu.numberRegister).toBe(2n);
+            expect(cpu.accumulator).toBe(1n);
+            expect(cpu.overflowToggle).toBe(false);
+        });
+    });
     describe("MA", () => {
         it("Multiplies", async () => {
             const memory = new Memory();

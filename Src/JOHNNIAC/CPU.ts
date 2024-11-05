@@ -492,6 +492,14 @@ export class CPU {
                     this._overflowToggle = overflow;
                 }
                 break;
+            case OP.M:
+                //The Accumulator is cleared to zero at the start of the operation.
+                // The double length product of the multiplier in MQ and the multiplicand from the Store is formed in A and MQ.
+                // The sign bit and the 39 high order bits of product are put in A; the low order 39 bits of product are in MQ.
+                // The sign bit of MQ is zero.
+                this._accumulator.value = 0n;
+                this._multiply(data, false);
+                break;
             case OP.MA:
                 // The contents of the Accumulator is retained and added to the product as it is developed.
                 // Since the word which resided in the Accumulator at the start of the operation is shifted as the multiplication progresses, 
@@ -888,7 +896,6 @@ export class CPU {
             case OP.SV:
             case OP.MR:
             case OP.MNR:
-            case OP.M:
             case OP.MN:
             case OP.MNA:
             case OP.MB:
