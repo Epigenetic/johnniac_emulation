@@ -5619,7 +5619,7 @@ builder.addCardString('INITIATE          020 * 92 050,6454');
 builder.addCardString('INITIATE          020 K  4 050,6455');
 builder.addCardString('INITIATE          020,6456 050,6457');
 builder.addCardString('INITIATE          020 * 93 050 Q  0     SET UP AVAILABLE SPACE');
-builder.addCardString('INITIATE          020 * 94 010 $  1');
+builder.addCardString('INITIATE          050 * 94 010 $  1');
 builder.addCardString('INITIATE     *  2 020 * 94 056 *  3');
 builder.addCardString('INITIATE          024 I  1 056 *  4');
 builder.addCardString('INITIATE     *  3 024 I  1 050 ----');
