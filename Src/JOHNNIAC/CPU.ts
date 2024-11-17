@@ -882,6 +882,9 @@ export class CPU {
                         this._accumulator.value = BigInt(eventData.data);
                     }
                 }
+            case OP.EJ:
+                // TODO
+                break;
             case OP.TFL:
             case OP.TFR:
             case OP.T1L:
@@ -914,7 +917,6 @@ export class CPU {
             case OP.LLC:
             case OP.DIS:
             case OP.HUT:
-            case OP.EJ:
             case OP.PMI:
             case OP.NMI:
             case OP.H1L:
