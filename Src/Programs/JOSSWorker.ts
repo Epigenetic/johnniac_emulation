@@ -1461,6 +1461,8 @@ builder.addCardString('E---E031     E 31 020 E 31 010 *  0     CAN\'T EXPRESS VA
 builder.addCardString('                $              E 32');
 builder.addCardString('E---E040     *  0 050 P 18 010 D  0,');
 
+builder.addCardString('                $               501')
+
 builder.addCardString('E---E100     *  0     * 50 012 * 51');
 builder.addCardString('E---E101     *  1     * 51 012 * 52');
 builder.addCardString('E---E102     *  2     * 52 012 * 53');
@@ -2181,9 +2183,6 @@ builder.addCardString('F010E780     * 96 032,4047,463,1771     TAN (PI/8)= .4142
 builder.addCardString('F010E790     * 97                11');
 builder.addCardString('F010E800     * 98                15,');
 
-builder.addCardString('F011E000+    F 11 004 * 91 010 $  0     MAX');
-
-builder.addCardString('F012E000     F 12 004 * 92 010 $  0     MIN');
 builder.addCardString('F012E010          024 K  2 052 *  9');
 builder.addCardString('F012E020          060 *  2 010 $  1');
 builder.addCardString('F012E030          020 Q  6 001 E  6     MALFORMED IF NOT MULTIPLE ARGUMENTS');
@@ -2196,7 +2195,11 @@ builder.addCardString('F012E090     *  3 020 H 22 050 Q  3');
 builder.addCardString('F012E100     *  4 020 Q  7 002 *  1');
 builder.addCardString('F012E110     *  9 010 ----');
 builder.addCardString('F012E120     * 91 071    4 001 *  4     FOR MAX');
-builder.addCardString('F012E130     * 92 071    6 001 *  4,    FOR MIN');
+builder.addCardString('F012E130     * 92 071    6 001 *  4     FOR MIN');
+
+builder.addCardString('F011E000+    F 11 004 * 91 010 $  0     MAX');
+
+builder.addCardString('F012E000     F 12 004 * 92 010 $  0,    MIN');
 
 builder.addCardString('G000E000+    G  0 010 *  6 010 *  0     SET (014=SHORT FORM)');
 builder.addCardString('G000E010     *  0 020 J 12 050 P  2     INITIALIZE');
@@ -4395,7 +4398,7 @@ builder.addCardString('=011E080          050 P  5 020 Q  3');
 builder.addCardString('=011E090          124 K 13 050 P  6');
 builder.addCardString('=011E100     *  9 010 ----         ,');
 
-builder.addCardString('=019E000     = 19 004 * 98 010 * 10     POP Q8-Q9 CONTROLS');
+// = 19
 builder.addCardString('=019E010     *  0 024 K  2 052 *  9');
 builder.addCardString('=019E020          060 T  0 056 *  1');
 builder.addCardString('=019E030          052 *  2 024 K  3');
@@ -4435,8 +4438,9 @@ builder.addCardString('=016E000     = 16 004 * 96 010 *  0     PUSH Q6-Q7 AUXILI
 
 builder.addCardString('=017E000     = 17 004 * 96 010 * 10     POP G6-Q7 AUXILIARY');
 
-builder.addCardString('=018E000     = 18 004 * 98 010 *  0,    PUSH Q8-Q9 CONTROLS');
+builder.addCardString('=018E000     = 18 004 * 98 010 *  0     PUSH Q8-Q9 CONTROLS');
 
+builder.addCardString('=019E000     = 19 004 * 98 010 * 10,     POP Q8-Q9 CONTROLS');
 
 builder.addCardString('=020E000+    = 20 010 $  0              EVALUATE DECIMAL EXPRESSION (UNSIGNED');
 builder.addCardString('=020E010          024 K  2 052 *  9');
