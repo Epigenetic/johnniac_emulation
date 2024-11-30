@@ -1056,12 +1056,13 @@ export class CPU {
 
                     const message: TTypewriterMessage = {
                         command: WorkerCommand.MatchControlRegister,
-                        pattern: this._memory.get(data) & MatchPatternMask,
+                        mask: this._memory.get(data) & MatchPatternMask,
+                        pattern: this._accumulator.value,
                     };
                     this._eventData = undefined;
                     this._typewriterPort.postMessage(message);
                     const eventData = await this._waitForEventMessage();
-                    if (eventData.data === undefined) {
+                    if (eventData.data === null) {
                         this._accumulator.value = 1n << 39n;
                     } else {
                         this._accumulator.value = BigInt(eventData.data);
@@ -1075,12 +1076,13 @@ export class CPU {
 
                     const message: TTypewriterMessage = {
                         command: WorkerCommand.MismatchControlRegister,
-                        pattern: this._memory.get(data) & MatchPatternMask,
+                        mask: this._memory.get(data) & MatchPatternMask,
+                        pattern: this._accumulator.value,
                     };
                     this._eventData = undefined;
                     this._typewriterPort.postMessage(message);
                     const eventData = await this._waitForEventMessage();
-                    if (eventData.data === undefined) {
+                    if (eventData.data === null) {
                         this._accumulator.value = 1n << 39n;
                     } else {
                         this._accumulator.value = BigInt(eventData.data);

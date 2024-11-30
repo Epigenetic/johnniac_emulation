@@ -59,22 +59,22 @@ export class MultipleTypewriterCommunication {
         return new StationControlRegister(register);
     }
 
-    public findMatchingRegister(pattern: bigint): bigint | undefined {
+    public findMatchingRegister(mask: bigint, pattern: bigint): bigint | null {
         for (const register of this._stationControlRegisters) {
-            if ((register & MatchPatternMask) === pattern) {
+            if (!((register & mask) ^ pattern)) {
                 return register;
             }
         }
-        return undefined;
+        return null;
     }
 
-    public findMismatchRegister(pattern: bigint): bigint | undefined {
+    public findMismatchRegister(mask: bigint, pattern: bigint): bigint | null {
         for (const register of this._stationControlRegisters) {
-            if ((register & MatchPatternMask) !== pattern) {
+            if ((register & mask) ^ pattern) {
                 return register;
             }
         }
-        return undefined;
+        return null;
     }
 }
 
@@ -331,12 +331,13 @@ interface IBufferTransmissionMessage extends ITypewriterMessage {
 
 interface IMatchScreenRegisterMessage extends ITypewriterMessage {
     command: WorkerCommand.MatchControlRegister;
+    mask: bigint;
     pattern: bigint;
-
 }
 
 interface IMismatchScreenRegisterMessage extends ITypewriterMessage {
     command: WorkerCommand.MismatchControlRegister;
+    mask: bigint;
     pattern: bigint;
 }
 
