@@ -354,6 +354,42 @@ describe("CPU", () => {
             expect(cpu.overflowToggle).toBe(true);
         })
     });
+    describe("RSV", () => {
+        it("Clears accumulator before subtracting", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.RA, 3, OP.RSV, 2));
+            memory.set(1, buildWord(OP.HTL, 4, OP.BLANK, 0));
+            memory.set(2, BigInt.asUintN(40, -2n));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            await cpu.go();
+            expect(cpu.accumulator).toBe(BigInt.asUintN(40, 2n));
+            expect(cpu.numberRegister).toBe(BigInt.asUintN(40, -2n));
+            expect(cpu.overflowToggle).toBe(false);
+        });
+        it("Subtracts if MQ is positive", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.RSV, 2, OP.HTL, 4));
+            memory.set(2, 2n);
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            await cpu.go();
+            expect(cpu.accumulator).toBe(BigInt.asUintN(40, -2n));
+            expect(cpu.numberRegister).toBe(2n);
+            expect(cpu.overflowToggle).toBe(false);
+        });
+        it("Adds if MQ is negative", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.RSV, 2, OP.HTL, 4));
+            memory.set(2, BigInt.asUintN(40, -2n));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            await cpu.go();
+            expect(cpu.accumulator).toBe(BigInt.asUintN(40, 2n));
+            expect(cpu.numberRegister).toBe(BigInt.asUintN(40, -2n));
+            expect(cpu.overflowToggle).toBe(false);
+        });
+    });
     describe("A", () => {
         it("Adds accumulator to memory value", async () => {
             const memory = new Memory();

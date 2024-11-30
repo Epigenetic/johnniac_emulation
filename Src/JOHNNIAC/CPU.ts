@@ -520,6 +520,37 @@ export class CPU {
                     this._overflowToggle = overflow;
                 }
                 break;
+            case OP.RSV:
+                {
+                    // The 023 operation is conditionally an 020 or an 021 operation.
+                    // The operation is selected which is expected to yield a negative result in the Accumulator.
+                    // Zero is the exception; it gives a result zero which has a zero in the sign bit.
+                    // The 023 operation followed by a Transfer Plus can he used to test for zero.
+                    // The steps in the operation are:
+                    //  Clear the Accumulator to zero.
+                    this._accumulator.value = 0n;
+                    //  Read the specified word from the Store to the Number register.
+                    this._numberRegister.value = this._memory.get(data);
+                    //  Examine the sign bit of the Number register and choose(a) or (b).
+                    const signBit = this._accumulator.value >> 39n << 39n;
+                    let result;
+                    let overflow;
+                    //      (a) Complement and Add if the sign bit is zero.
+                    if (!signBit) {
+                        result = this._accumulator.value + this._complement();
+                        overflow = this._hasOverflow(result, true);
+                    }
+                    //      (b) Add if the sign bit is one.
+                    else {
+                        result = this._accumulator.value + this._numberRegister.value;
+                        overflow = this._hasOverflow(result, false);
+                    }
+                    //  Put the result in the Accumulator.
+                    this._accumulator.value = result;
+                    //  Set O.F.toggle if overflow occurred.
+                    this._overflowToggle = overflow;
+                }
+                break;
             case OP.A:
                 {
                     // The word specified by the address 1s added to the number residing in the Accumulator and the result is put back in theAccumulator.
@@ -984,7 +1015,6 @@ export class CPU {
             case OP.TFL:
             case OP.TFR:
             case OP.RAV:
-            case OP.RSV:
             case OP.AV:
             case OP.SV:
             case OP.MR:
