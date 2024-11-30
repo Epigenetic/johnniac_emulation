@@ -1251,6 +1251,138 @@ describe("CPU", () => {
             expect(cpu.currentCommand).toBe(CurrentCommand.Right);
         });
     });
+    describe("H1L", () => {
+        it("Halts left if switch is set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.H1L, 5, OP.HTR, 10));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchH1 = true;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(5);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Left);
+        });
+        it("Does not halt if switch is not set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.H1L, 5, OP.HTR, 10));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchH1 = false;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(10);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+        });
+    });
+    describe("H1R", () => {
+        it("Halts right if switch is set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.H1R, 5, OP.HTL, 10));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchH1 = true;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(5);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+        });
+        it("Does not halt if switch is not set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.H1R, 5, OP.HTL, 10));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchH1 = false;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(10);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Left);
+        });
+    });
+    describe("H2L", () => {
+        it("Halts left if switch is set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.H2L, 5, OP.HTR, 10));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchH2 = true;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(5);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Left);
+        });
+        it("Does not halt if switch is not set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.H2L, 5, OP.HTR, 10));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchH2 = false;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(10);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+        });
+    });
+    describe("H2R", () => {
+        it("Halts right if switch is set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.H2R, 5, OP.HTL, 10));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchH2 = true;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(5);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+        });
+        it("Does not halt if switch is not set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.H2R, 5, OP.HTL, 10));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchH2 = false;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(10);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Left);
+        });
+    });
+    describe("H3L", () => {
+        it("Halts left if switch is set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.H3L, 5, OP.HTR, 10));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchH3 = true;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(5);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Left);
+        });
+        it("Does not halt if switch is not set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.H3L, 5, OP.HTR, 10));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchH3 = false;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(10);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+        });
+    });
+    describe("H3R", () => {
+        it("Halts right if switch is set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.H3R, 5, OP.HTL, 10));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchH3 = true;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(5);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+        });
+        it("Does not halt if switch is not set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.H3R, 5, OP.HTL, 10));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchH3 = false;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(10);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Left);
+        });
+    });
     describe("RD", () => {
         it("Reads drum into memory", async () => {
             const memory = new Memory();

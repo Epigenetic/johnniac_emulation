@@ -77,6 +77,19 @@ export class CPU {
         this._switchT3 = value;
     }
 
+    private _switchH1 = false;
+    public set switchH1(value: boolean) {
+        this._switchH1 = value;
+    }
+    private _switchH2 = false;
+    public set switchH2(value: boolean) {
+        this._switchH2 = value;
+    }
+    private _switchH3 = false;
+    public set switchH3(value: boolean) {
+        this._switchH3 = value;
+    }
+
     // The Overflow Toggle is turned on when an overflow occurs and remains on until one of the operations 003 or 007 turns it off.
     private _overflowToggle: boolean = false;
     public get overflowToggle() {
@@ -883,6 +896,60 @@ export class CPU {
                 this._currentCommand = CurrentCommand.Right;
                 transferExecuted = true;
                 break;
+            case OP.H1L:
+                // If the conditioning switch is on, these operations are unconditional transfer operations
+                if (this._switchH1) {
+                    this._halt = true;
+                    this._nextInstructionRegister.value = data;
+                    this._currentCommand = CurrentCommand.Left;
+                    transferExecuted = true;
+                }
+                break;
+            case OP.H1R:
+                // If the conditioning switch is on, these operations are unconditional transfer operations
+                if (this._switchH1) {
+                    this._halt = true;
+                    this._nextInstructionRegister.value = data;
+                    this._currentCommand = CurrentCommand.Right;
+                    transferExecuted = true;
+                }
+                break;
+            case OP.H2L:
+                // If the conditioning switch is on, these operations are unconditional transfer operations
+                if (this._switchH2) {
+                    this._halt = true;
+                    this._nextInstructionRegister.value = data;
+                    this._currentCommand = CurrentCommand.Left;
+                    transferExecuted = true;
+                }
+                break;
+            case OP.H2R:
+                // If the conditioning switch is on, these operations are unconditional transfer operations
+                if (this._switchH2) {
+                    this._halt = true;
+                    this._nextInstructionRegister.value = data;
+                    this._currentCommand = CurrentCommand.Right;
+                    transferExecuted = true;
+                }
+                break;
+            case OP.H3L:
+                // If the conditioning switch is on, these operations are unconditional transfer operations
+                if (this._switchH3) {
+                    this._halt = true;
+                    this._nextInstructionRegister.value = data;
+                    this._currentCommand = CurrentCommand.Left;
+                    transferExecuted = true;
+                }
+                break;
+            case OP.H3R:
+                // If the conditioning switch is on, these operations are unconditional transfer operations
+                if (this._switchH3) {
+                    this._halt = true;
+                    this._nextInstructionRegister.value = data;
+                    this._currentCommand = CurrentCommand.Right;
+                    transferExecuted = true;
+                }
+                break;
             case OP.WRITE_LINE_BUFFER:
                 {
                     if (!this._typewriterPort) {
@@ -1047,12 +1114,6 @@ export class CPU {
             case OP.HUT:
             case OP.PMI:
             case OP.NMI:
-            case OP.H1L:
-            case OP.H1R:
-            case OP.H2L:
-            case OP.H2R:
-            case OP.H3L:
-            case OP.H3R:
                 throw new Error(`Unimplemented op code ${OP[op]}`);
             default:
                 throw new Error(`Unknown op code ${op}`);
