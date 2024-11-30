@@ -753,6 +753,19 @@ describe("CPU", () => {
             expect(memory.get(4)).toBe(0b0101_0101_1111_1111_1111_0101_0101_0101_0101_0101n);
         });
     });
+    describe("SOR", () => {
+        it("Stores bits 20-27", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.RA, 2, OP.SOR, 4));
+            memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
+            memory.set(2, FortyBitMask);
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            await cpu.go();
+            const bits20To27 = 0b0000_0000_0000_0000_0000_1111_1111_0000_0000_0000n;
+            expect(memory.get(4)).toBe(bits20To27);
+        });
+    });
     describe("SAR", () => {
         it("Stores bits 28-39", async () => {
             const memory = new Memory();
