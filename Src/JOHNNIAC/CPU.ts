@@ -64,6 +64,19 @@ export class CPU {
     private _clockWorker: Worker | undefined;
     private _typewriterWorker: SharedWorker | undefined;
 
+    private _switchT1 = false;
+    public set switchT1(value: boolean) {
+        this._switchT1 = value;
+    }
+    private _switchT2 = false;
+    public set switchT2(value: boolean) {
+        this._switchT2 = value;
+    }
+    private _switchT3 = false;
+    public set switchT3(value: boolean) {
+        this._switchT3 = value;
+    }
+
     // The Overflow Toggle is turned on when an overflow occurs and remains on until one of the operations 003 or 007 turns it off.
     private _overflowToggle: boolean = false;
     public get overflowToggle() {
@@ -423,6 +436,54 @@ export class CPU {
                 this._nextInstructionRegister.value = data;
                 this._currentCommand = CurrentCommand.Right;
                 transferExecuted = true;
+                break;
+            case OP.T1L:
+                // A jump occurs if Switch T1 on the console is on. No jump occurs if the switch is off.
+                if (this._switchT1) {
+                    this._nextInstructionRegister.value = data;
+                    this._currentCommand = CurrentCommand.Left;
+                    transferExecuted = true;
+                }
+                break;
+            case OP.T1R:
+                // A jump occurs if Switch T1 on the console is on. No jump occurs if the switch is off.
+                if (this._switchT1) {
+                    this._nextInstructionRegister.value = data;
+                    this._currentCommand = CurrentCommand.Right;
+                    transferExecuted = true;
+                }
+                break;
+            case OP.T2L:
+                // A jump occurs if Switch T2 on the console is on. No jump occurs if the switch is off.
+                if (this._switchT2) {
+                    this._nextInstructionRegister.value = data;
+                    this._currentCommand = CurrentCommand.Left;
+                    transferExecuted = true;
+                }
+                break;
+            case OP.T2R:
+                // A jump occurs if Switch T2 on the console is on. No jump occurs if the switch is off.
+                if (this._switchT2) {
+                    this._nextInstructionRegister.value = data;
+                    this._currentCommand = CurrentCommand.Right;
+                    transferExecuted = true;
+                }
+                break;
+            case OP.T3L:
+                // A jump occurs if Switch T3 on the console is on. No jump occurs if the switch is off.
+                if (this._switchT3) {
+                    this._nextInstructionRegister.value = data;
+                    this._currentCommand = CurrentCommand.Left;
+                    transferExecuted = true;
+                }
+                break;
+            case OP.T3R:
+                // A jump occurs if Switch T3 on the console is on. No jump occurs if the switch is off.
+                if (this._switchT3) {
+                    this._nextInstructionRegister.value = data;
+                    this._currentCommand = CurrentCommand.Right;
+                    transferExecuted = true;
+                }
                 break;
             case OP.RA:
                 // This operation replaces the contents of the Accumulator with a word from the Internal Store. The Overflow Toggle cannot be turned on by 020.
@@ -887,12 +948,6 @@ export class CPU {
                 break;
             case OP.TFL:
             case OP.TFR:
-            case OP.T1L:
-            case OP.T1R:
-            case OP.T2L:
-            case OP.T2R:
-            case OP.T3L:
-            case OP.T3R:
             case OP.RAV:
             case OP.RSV:
             case OP.AV:

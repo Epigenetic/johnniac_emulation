@@ -163,6 +163,162 @@ describe("CPU", () => {
             expect(cpu.currentCommand).toBe(CurrentCommand.Right);
         });
     });
+    describe("T1L", () => {
+        it("Transfers left if switch T1 is set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.T1L, 3, OP.BLANK, 0));
+            memory.set(1, buildWord(OP.HTR, 10, OP.BLANK, 0));
+            memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 10));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchT1 = true;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(5);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Left);
+        });
+        it("Does not transfer if switch T1 is not set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.T1L, 3, OP.BLANK, 0));
+            memory.set(1, buildWord(OP.HTR, 10, OP.BLANK, 0));
+            memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 15));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchT1 = false;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(10);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+        });
+    });
+    describe("T1R", () => {
+        it("Transfers right if switch T1 is set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.T1R, 3, OP.BLANK, 0));
+            memory.set(1, buildWord(OP.HTR, 10, OP.BLANK, 0));
+            memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 15));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchT1 = true;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(15);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+        });
+        it("Does not transfer if switch T1 is not set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.T1R, 3, OP.BLANK, 0));
+            memory.set(1, buildWord(OP.HTR, 10, OP.BLANK, 0));
+            memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 15));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchT1 = false;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(10);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+        });
+    });
+    describe("T2L", () => {
+        it("Transfers left if switch T2 is set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.T2L, 3, OP.BLANK, 0));
+            memory.set(1, buildWord(OP.HTR, 10, OP.BLANK, 0));
+            memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 10));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchT2 = true;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(5);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Left);
+        });
+        it("Does not transfer if switch T2 is not set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.T2L, 3, OP.BLANK, 0));
+            memory.set(1, buildWord(OP.HTR, 10, OP.BLANK, 0));
+            memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 15));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchT2 = false;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(10);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+        });
+    });
+    describe("T2R", () => {
+        it("Transfers right if switch T2 is set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.T2R, 3, OP.BLANK, 0));
+            memory.set(1, buildWord(OP.HTR, 10, OP.BLANK, 0));
+            memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 15));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchT2 = true;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(15);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+        });
+        it("Does not transfer if switch T2 is not set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.T2R, 3, OP.BLANK, 0));
+            memory.set(1, buildWord(OP.HTR, 10, OP.BLANK, 0));
+            memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 15));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchT2 = false;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(10);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+        });
+    });
+    describe("T3L", () => {
+        it("Transfers left if switch T3 is set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.T3L, 3, OP.BLANK, 0));
+            memory.set(1, buildWord(OP.HTR, 10, OP.BLANK, 0));
+            memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 10));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchT3 = true;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(5);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Left);
+        });
+        it("Does not transfer if switch T3 is not set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.T3L, 3, OP.BLANK, 0));
+            memory.set(1, buildWord(OP.HTR, 10, OP.BLANK, 0));
+            memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 15));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchT3 = false;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(10);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+        });
+    });
+    describe("T3R", () => {
+        it("Transfers right if switch T3 is set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.T3R, 3, OP.BLANK, 0));
+            memory.set(1, buildWord(OP.HTR, 10, OP.BLANK, 0));
+            memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 15));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchT3 = true;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(15);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+        });
+        it("Does not transfer if switch T3 is not set", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.T3R, 3, OP.BLANK, 0));
+            memory.set(1, buildWord(OP.HTR, 10, OP.BLANK, 0));
+            memory.set(3, buildWord(OP.HTL, 5, OP.HTR, 15));
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            cpu.switchT3 = false;
+            await cpu.go();
+            expect(cpu.nextInstructionRegister).toBe(10);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+        });
+    });
     describe("RA", () => {
         it("Loads word to accumulator", async () => {
             const memory = new Memory();
@@ -293,8 +449,8 @@ describe("CPU", () => {
             expect(cpu.overflowToggle).toBe(true);
         })
     });
-    describe("M",()=>{
-        it("Multiplies", async() =>{
+    describe("M", () => {
+        it("Multiplies", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.LM, 2, OP.RA, 3));
             memory.set(1, buildWord(OP.M, 4, OP.HTL, 2));
