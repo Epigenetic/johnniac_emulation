@@ -1216,7 +1216,7 @@ describe("CPU", () => {
 
             expect(cpu.multipliedQuotientRegister).toBe(0n);
         });
-        it("Shfits accumulator right", async () => {
+        it("Shifts accumulator right", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.SRC, 2));
             memory.set(1, buildWord(OP.HTL, 1, OP.BLANK, 0));
