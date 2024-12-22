@@ -1062,11 +1062,7 @@ export class CPU {
                     this._eventData = undefined;
                     this._typewriterPort.postMessage(message);
                     const eventData = await this._waitForEventMessage();
-                    if (eventData.data === null) {
-                        this._accumulator.value = 1n << 39n;
-                    } else {
-                        this._accumulator.value = BigInt(eventData.data);
-                    }
+                    this._accumulator.value = BigInt(eventData.data);
                 }
             case OP.MISMATCH_SCR:
                 {
@@ -1082,11 +1078,7 @@ export class CPU {
                     this._eventData = undefined;
                     this._typewriterPort.postMessage(message);
                     const eventData = await this._waitForEventMessage();
-                    if (eventData.data === null) {
-                        this._accumulator.value = 1n << 39n;
-                    } else {
-                        this._accumulator.value = BigInt(eventData.data);
-                    }
+                    this._accumulator.value = BigInt(eventData.data);
                 }
             case OP.EJ:
                 // TODO

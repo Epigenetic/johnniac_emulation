@@ -59,22 +59,22 @@ export class MultipleTypewriterCommunication {
         return new StationControlRegister(register);
     }
 
-    public findMatchingRegister(mask: bigint, pattern: bigint): bigint | null {
+    public findMatchingRegister(mask: bigint, pattern: bigint): bigint {
         for (const register of this._stationControlRegisters) {
             if (!((register & mask) ^ pattern)) {
                 return register;
             }
         }
-        return null;
+        return searchFailValue;
     }
 
-    public findMismatchRegister(mask: bigint, pattern: bigint): bigint | null {
+    public findMismatchRegister(mask: bigint, pattern: bigint): bigint {
         for (const register of this._stationControlRegisters) {
             if ((register & mask) ^ pattern) {
                 return register;
             }
         }
-        return null;
+        return searchFailValue;
     }
 }
 
@@ -276,6 +276,8 @@ export interface IStationControlRegister {
     /** Station Number (Permanent) */
     stationNumber: number;
 }
+
+export const searchFailValue = new StationControlRegister(true, false, false, false, false, false, false, 0, false, false, false, false, false, false, false, 0).value();
 
 export enum WorkerCommand {
     ReadLineBuffer,
