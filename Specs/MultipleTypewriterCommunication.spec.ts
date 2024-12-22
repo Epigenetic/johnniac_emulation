@@ -1,4 +1,5 @@
-import { MatchPatternMask, MultipleTypewriterCommunication, StationControlRegister } from "../Src/MTC/MultipleTypewriterCommunication";
+import { FortyBitMask } from "../Src/JOHNNIAC/Register";
+import { MatchPatternMask, MultipleTypewriterCommunication, searchFailValue, StationControlRegister } from "../Src/MTC/MultipleTypewriterCommunication";
 
 describe("MultipleTypewriterCommunication", () => {
     describe("getLineBuffer", () => {
@@ -67,9 +68,9 @@ describe("MultipleTypewriterCommunication", () => {
                 1
             );
             mtc.setStationControlRegister(1, register);
-            expect(mtc.findMatchingRegister(register.value() & MatchPatternMask)).toBe(register.value());
+            expect(mtc.findMatchingRegister(register.value() & MatchPatternMask, register.value() & MatchPatternMask)).toBe(register.value());
         });
-        it("Returns undefined when no match", () => {
+        it("Returns fail value when no match", () => {
             const mtc = new MultipleTypewriterCommunication();
             const register = new StationControlRegister(
                 true,
@@ -89,7 +90,7 @@ describe("MultipleTypewriterCommunication", () => {
                 true,
                 1
             );
-            expect(mtc.findMatchingRegister(register.value() & MatchPatternMask)).toBeUndefined();
+            expect(mtc.findMatchingRegister(register.value() & MatchPatternMask, FortyBitMask)).toEqual(searchFailValue);
         });
     });
     describe("findMismatchRegister", () => {
@@ -114,11 +115,11 @@ describe("MultipleTypewriterCommunication", () => {
                 1
             );
             mtc.setStationControlRegister(1, register);
-            expect(mtc.findMismatchRegister(register.value() & MatchPatternMask)).toBe(0n);
+            expect(mtc.findMismatchRegister(register.value() & MatchPatternMask, FortyBitMask)).toBe(0n);
         });
-        it("Returns undefined when no match", () => {
+        it("Returns fail value when no match", () => {
             const mtc = new MultipleTypewriterCommunication();
-            expect(mtc.findMismatchRegister(0n)).toBeUndefined();
+            expect(mtc.findMismatchRegister(0n, 0n)).toEqual(searchFailValue);
         });
     })
 });
