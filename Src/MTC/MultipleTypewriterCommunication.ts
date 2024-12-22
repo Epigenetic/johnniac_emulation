@@ -174,15 +174,15 @@ export class StationControlRegister {
             this.TL = Boolean(registerValue & (1n << 35n));
             this.CL = Boolean(registerValue & (1n << 34n));
             this.SU = Boolean(registerValue & (1n << 33n));
-            this.BN = Number((registerValue & (15n << 16n)) >> 16n);
-            this.ON = Boolean(registerValue & (1n << 13n));
-            this.OF = Boolean(registerValue & (1n << 12n));
-            this.TC = Boolean(registerValue & (1n << 11n));
-            this.RI = Boolean(registerValue & (1n << 10n));
-            this.RC = Boolean(registerValue & (1n << 9n));
-            this.EJ = Boolean(registerValue & (1n << 8n));
-            this.TO = Boolean(registerValue & (1n << 7n));
-            this.stationNumber = Number(registerValue & 7n);
+            this.BN = Number((registerValue & (15n << 21n)) >> 21n);
+            this.ON = Boolean(registerValue & (1n << 18n));
+            this.OF = Boolean(registerValue & (1n << 17n));
+            this.TC = Boolean(registerValue & (1n << 16n));
+            this.RI = Boolean(registerValue & (1n << 15n));
+            this.RC = Boolean(registerValue & (1n << 14n));
+            this.EJ = Boolean(registerValue & (1n << 13n));
+            this.TO = Boolean(registerValue & (1n << 12n));
+            this.stationNumber = Number(registerValue & 127n);
         } else if (
             EN !== undefined
             && DS !== undefined
@@ -230,14 +230,14 @@ export class StationControlRegister {
             | BigInt(this.TL) << 35n
             | BigInt(this.CL) << 34n
             | BigInt(this.SU) << 33n
-            | BigInt(this.BN) << 16n
-            | BigInt(this.ON) << 13n
-            | BigInt(this.OF) << 12n
-            | BigInt(this.TC) << 11n
-            | BigInt(this.RI) << 10n
-            | BigInt(this.RC) << 9n
-            | BigInt(this.EJ) << 8n
-            | BigInt(this.TO) << 7n
+            | BigInt(this.BN) << 21n
+            | BigInt(this.ON) << 18n
+            | BigInt(this.OF) << 17n
+            | BigInt(this.TC) << 16n
+            | BigInt(this.RI) << 15n
+            | BigInt(this.RC) << 14n
+            | BigInt(this.EJ) << 13n
+            | BigInt(this.TO) << 12n
 
     }
 }

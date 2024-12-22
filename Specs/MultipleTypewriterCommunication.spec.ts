@@ -121,5 +121,127 @@ describe("MultipleTypewriterCommunication", () => {
             const mtc = new MultipleTypewriterCommunication();
             expect(mtc.findMismatchRegister(0n, 0n)).toEqual(searchFailValue);
         });
-    })
+    });
+    describe("StationControlRegister", () => {
+        it("Parses EN bit", () => {
+            const scr = new StationControlRegister(0o040_0000_000_0000n);
+            expect(scr.EN).toBe(true);
+        });
+        it("Parses DS bit", () => {
+            const scr = new StationControlRegister(0o020_0000_000_0000n);
+            expect(scr.DS).toBe(true);
+        });
+        it("Parses RO bit", () => {
+            const scr = new StationControlRegister(0o010_0000_000_0000n);
+            expect(scr.RO).toBe(true);
+        });
+        it("Parses TL bit", () => {
+            const scr = new StationControlRegister(0o004_0000_000_0000n);
+            expect(scr.TL).toBe(true);
+        });
+        it("Parses CL bit", () => {
+            const scr = new StationControlRegister(0o002_0000_000_0000n);
+            expect(scr.CL).toBe(true);
+        });
+        it("Parses SU bit", () => {
+            const scr = new StationControlRegister(0o001_0000_000_0000n);
+            expect(scr.SU).toBe(true);
+        });
+        it("Parses ON bit", () => {
+            const scr = new StationControlRegister(0o000_0000_100_0000n);
+            expect(scr.ON).toBe(true);
+        });
+        it("Parses OF bit", () => {
+            const scr = new StationControlRegister(0o000_0000_040_0000n);
+            expect(scr.OF).toBe(true);
+        });
+        it("Parses TC bit", () => {
+            const scr = new StationControlRegister(0o000_0000_020_0000n);
+            expect(scr.TC).toBe(true);
+        });
+        it("Parses RI bit", () => {
+            const scr = new StationControlRegister(0o000_0000_010_0000n);
+            expect(scr.RI).toBe(true);
+        });
+        it("Parses RC bit", () => {
+            const scr = new StationControlRegister(0o000_0000_004_0000n);
+            expect(scr.RC).toBe(true);
+        });
+        it("Parses EJ bit", () => {
+            const scr = new StationControlRegister(0o000_0000_002_0000n);
+            expect(scr.EJ).toBe(true);
+        });
+        it("Parses TO bit", () => {
+            const scr = new StationControlRegister(0o000_0000_001_0000n);
+            expect(scr.TO).toBe(true);
+        });
+        it("Parses BN",()=>{
+            const scr = new StationControlRegister(0o000_0017_000_0000n);
+            expect(scr.BN).toBe(0o17);
+        });
+        it("Parses station number",()=>{
+            const scr = new StationControlRegister(0o000_0000_000_0177n);
+            expect(scr.stationNumber).toBe(0o177);
+        });
+        it("Serializes EN bit", () => {
+            const scr = new StationControlRegister(0o040_0000_000_0000n);
+            expect(scr.value()).toBe(0o040_0000_000_0000n);
+        });
+        it("Serializes DS bit", () => {
+            const scr = new StationControlRegister(0o020_0000_000_0000n);
+            expect(scr.value()).toBe(0o020_0000_000_0000n);
+        });
+        it("Serializes RO bit", () => {
+            const scr = new StationControlRegister(0o010_0000_000_0000n);
+            expect(scr.value()).toBe(0o010_0000_000_0000n);
+        });
+        it("Serializes TL bit", () => {
+            const scr = new StationControlRegister(0o004_0000_000_0000n);
+            expect(scr.value()).toBe(0o004_0000_000_0000n);
+        });
+        it("Serializes CL bit", () => {
+            const scr = new StationControlRegister(0o002_0000_000_0000n);
+            expect(scr.value()).toBe(0o002_0000_000_0000n);
+        });
+        it("Serializes SU bit", () => {
+            const scr = new StationControlRegister(0o001_0000_000_0000n);
+            expect(scr.value()).toBe(0o001_0000_000_0000n);
+        });
+        it("Serializes ON bit", () => {
+            const scr = new StationControlRegister(0o000_0000_100_0000n);
+            expect(scr.value()).toBe(0o000_0000_100_0000n);
+        });
+        it("Serializes OF bit", () => {
+            const scr = new StationControlRegister(0o000_0000_040_0000n);
+            expect(scr.value()).toBe(0o000_0000_040_0000n);
+        });
+        it("Serializes TC bit", () => {
+            const scr = new StationControlRegister(0o000_0000_020_0000n);
+            expect(scr.value()).toBe(0o000_0000_020_0000n);
+        });
+        it("Serializes RI bit", () => {
+            const scr = new StationControlRegister(0o000_0000_010_0000n);
+            expect(scr.value()).toBe(0o000_0000_010_0000n);
+        });
+        it("Serializes RC bit", () => {
+            const scr = new StationControlRegister(0o000_0000_004_0000n);
+            expect(scr.value()).toBe(0o000_0000_004_0000n);
+        });
+        it("Serializes EJ bit", () => {
+            const scr = new StationControlRegister(0o000_0000_002_0000n);
+            expect(scr.value()).toBe(0o000_0000_002_0000n);
+        });
+        it("Serializes TO bit", () => {
+            const scr = new StationControlRegister(0o000_0000_001_0000n);
+            expect(scr.value()).toBe(0o000_0000_001_0000n);
+        });
+        it("Serializes BN",()=>{
+            const scr = new StationControlRegister(0o000_0017_000_0000n);
+            expect(scr.value()).toBe(0o000_0017_000_0000n);
+        });
+        it("Serializes station number",()=>{
+            const scr = new StationControlRegister(0o000_0000_000_0177n);
+            expect(scr.value()).toBe(0o000_0000_000_0177n);
+        });
+    });
 });
