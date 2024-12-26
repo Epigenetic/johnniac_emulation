@@ -101,6 +101,16 @@ export class CPU {
         this._stepThrough = value;
     }
 
+    private _trace = false;
+    public set trace(value: boolean) {
+        this._trace = value;
+    }
+
+    private _symbolMap: Record<string, [number, number]> = {};
+    public set symbolMap(value: Record<string, [number, number]>) {
+        this._symbolMap = value;
+    }
+
     public addMemoryBreakpoint(...addresses: number[]) {
         this._memory.addBreakpoint(...addresses);
     }
@@ -159,6 +169,18 @@ export class CPU {
                     opAddress: this._currentCommand === CurrentCommand.Left ? leftAddress : rightAddress
                 })
                 debugger;
+            }
+
+            if (this._trace) {
+                for (let symbol in this._symbolMap) {
+                    const lowerBound = this._symbolMap[symbol]![0];
+                    const upperBound = lowerBound + this._symbolMap[symbol]![1]
+                    if (this._nextInstructionRegister.value >= lowerBound
+                        && this._nextInstructionRegister.value <= upperBound
+                    ) {
+                        console.log(`${symbol}${(this._nextInstructionRegister.value - lowerBound).toString().padStart(3)}`)
+                    }
+                }
             }
 
             if (this._currentCommand === CurrentCommand.Left) {

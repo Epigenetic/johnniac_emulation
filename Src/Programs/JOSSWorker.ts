@@ -5601,6 +5601,32 @@ self.onmessage = async (event) => {
     const now = new Date();
     const nowMinutes = now.getMinutes() + now.getHours() * 60;
     cpu.accumulator = BigInt(nowMinutes);
+    cpu.symbolMap = {
+        "W": [0o4340, 16],
+        "L": [0o4360, 16],
+        "U": [0o4400, 88],
+        "J": [0o4530, 24],
+        "I": [0o4560, 16],
+        "H": [0o4600, 32],
+        "E": [0o4640, 32],
+        "K": [0o4700, 48],
+        "N": [0o4760, 16],
+        "A": [0o5000, 132],
+        "D": [0o5540, 12],
+        "B": [0o5554, 20],
+        "=": [0o5600, 80],
+        "F": [0o5720, 16],
+        "G": [0o5740, 16],
+        "X": [0o5760, 16],
+        "P": [0o6000, 32],
+        "Q": [0o6040, 16],
+        "Z": [0o6060, 8],
+        "T": [0o6070, 8],
+        "S": [0o6100, 75],
+        "V": [0o6213, 53],
+        "R": [0o6300, 82]
+    }
+    cpu.trace=true;
     debugger;
     await cpu.go();
     debugger;
