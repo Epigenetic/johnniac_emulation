@@ -128,6 +128,24 @@ export class CPU {
         addresses.forEach(address => this._breakpoints.delete(address));
     }
 
+    public addSymbolBreakpoint(...symbols: string[]) {
+        symbols.forEach(symbol => this._breakpoints.add(this._translateSymbol(symbol)));
+    }
+
+    public removeSymbolBreakpoint(...symbols: string[]) {
+        symbols.forEach(symbol => this._breakpoints.delete(this._translateSymbol(symbol)));
+    }
+
+    private _translateSymbol(symbol: string): number {
+        const letter = symbol.substring(0, 1)
+        const offset = Number(symbol.substring(1, 4));
+        const symbolValue = this._symbolMap[letter]?.[0];
+        if (!symbolValue) {
+            throw new Error(`Undefined symbol: ${symbol}`);
+        }
+        return symbolValue + offset;
+    }
+
     private _eventData: MessageEvent<any> | undefined = undefined;
 
     constructor(
