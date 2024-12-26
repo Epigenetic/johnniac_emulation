@@ -4096,7 +4096,7 @@ self.onmessage = async (event) => {
     builder.addCardString('=001E040     *  1 020 ---- 050 P  1     LEAVES NEW CHARACTER IN ACC');
     builder.addCardString('=001E050     *  9 010 ----         ,');
 
-    builder.addCardString('=002E000+     = 2 024 K  2 010 $  0     ADVANCE TO NONSPACE');
+    builder.addCardString('=002E000+    =  2 024 K  2 010 $  0     ADVANCE TO NONSPACE');
     builder.addCardString('=002E010          052 *  9 010 *  1');
 
     builder.addCardString('=003E000     =  3 010 $  0              ELIMINATE SPACES');
@@ -5357,33 +5357,6 @@ self.onmessage = async (event) => {
     builder.addCardString('=076E080          020 $  0 010 = 19');
     builder.addCardString('=076E090     *  9 010 ----         ,');
 
-    builder.addCardString('=077E000+    = 77 010 $  0              MATCH GROUPERS');
-    builder.addCardString('=077E010          024 K  2 052 *  9');
-    builder.addCardString('=077E020          020 P  1 052 *  1');
-    builder.addCardString('=077E030          050 J 20 124 K 32     LEAVE RIGHT GROUPER FOR DO AND G14');
-    builder.addCardString('=077E040          025 K 32 001 E  6     ERROR IF NOT RIGHT GROUPER');
-    builder.addCardString('=077E050     *  1 020 ---- 124 Q  5');
-    builder.addCardString('=077E060          025 Q  5 001 E  6     ERROR IF NO MATCH WITH PREV OPERATOR');
-    builder.addCardString('=077E070          020 $  0 010 = 15     POP OPERATOR');
-    builder.addCardString('=077E080     *  9 010 ----         ,    EXIT');
-
-    builder.addCardString('=078E000+    = 78 010 $  0              TRANSMIT LINE AND RESTORE');
-    builder.addCardString('=078E010          024 K  2 052 P 25     DRUM ROUTINE IF NECESSARY');
-    builder.addCardString('=078E020          020 H 17 050 P 24     SAVE DRUM CW');
-    builder.addCardString('=078E030          020 $  0 010 = 25     TRANSMIT');
-    builder.addCardString('=078E040          020 H 17 025 P 24');
-    builder.addCardString('=078E050          050 T  0 023 T  0');
-    builder.addCardString('=078E060          002 P 25 004 P 24     EXIT VIA P25 IF STILL INTACT');
-    builder.addCardString('=078E070          060 H 17 110 M  0     ELSE READ FROM DRUM');
-    builder.addCardString('=078E080          010 P 25         ,    THEN EXIT');
-
-    builder.addCardString('=079E000+    = 79 024 K  2 010 $  0     VERIFY PRECEDING SPACE');
-    builder.addCardString('=079E010          052 *  9 020 P  2');
-    builder.addCardString('=079E020          025 K  3 052 *  1');
-    builder.addCardString('=079E030     *  1 020 ---- 124 A 14');
-    builder.addCardString('=079E040          025 A 14 001 E  6');
-    builder.addCardString('=079E050     *  9 010 ----         ,');
-
     builder.addCardString('INITIATE        $              M  0     INITIALIZER (AT REGION M)');
     builder.addCardString('INITIATE     *  0 020 * 90 070    0     SET ACC=,1234 AND MQ=0');
     builder.addCardString('INITIATE          134 $  0 071   40     HALT FOR TIME OF DAY IN MINUTES');
@@ -5423,7 +5396,7 @@ self.onmessage = async (event) => {
     // cpu.addMemoryBreakpoint(0o5600)
     await cpu.go();
 
-    // Load in X 1, X 4, X 5, = 9, = 10, = 22, = 24, = 25, and = 26 over J136E
+    // Load in X 1, X 4, X 5, = 9, = 10, = 22, = 24, = 25, = 26, = 77, = 78, and = 79 over J136E
     memory.set(0o0006, 0o020_0006_010_5600n);
     memory.set(0o0007, 0o013_0011_020_4360n);
     memory.set(0o0010, 0o002_5773_010_0013n);
@@ -5591,12 +5564,36 @@ self.onmessage = async (event) => {
     memory.set(0o0252, 0o020_6045_052_0254n);
     memory.set(0o0253, 0o020_0253_010_5617n);
     memory.set(0o0254, 0o010_0000_000_0000n);
+    memory.set(0o0255, 0o024_4702_052_0264n);
+    memory.set(0o0256, 0o020_6001_052_0261n);
+    memory.set(0o0257, 0o050_4554_124_4740n);
+    memory.set(0o0260, 0o025_4740_001_4646n);
+    memory.set(0o0261, 0o020_0000_124_6045n);
+    memory.set(0o0262, 0o025_6045_001_4646n);
+    memory.set(0o0263, 0o020_0263_010_5617n);
+    memory.set(0o0264, 0o010_0000_000_0000n);
+    memory.set(0o0265, 0o024_4702_052_6031n);
+    memory.set(0o0266, 0o020_4621_050_6030n);
+    memory.set(0o0267, 0o020_0267_010_5631n);
+    memory.set(0o0270, 0o020_4621_025_6030n);
+    memory.set(0o0271, 0o050_6070_023_6070n);
+    memory.set(0o0272, 0o002_6031_004_6030n);
+    memory.set(0o0273, 0o060_4621_110_5220n);
+    memory.set(0o0274, 0o010_6031_000_0000n);
+    memory.set(0o0275, 0o052_0301_020_6002n);
+    memory.set(0o0276, 0o025_4703_052_0277n);
+    memory.set(0o0277, 0o020_0000_124_5016n);
+    memory.set(0o0300, 0o025_5016_001_4646n);
+    memory.set(0o0301, 0o010_0000_000_0000n);
     memory.set(0o5611, 0o130_5611_134_5611n);
     memory.set(0o5612, 0o024_4702_010_0110n);
     memory.set(0o5626, 0o010_0115_010_0121n);
     memory.set(0o5630, 0o010_0141_000_0000n);
     memory.set(0o5631, 0o010_0176_010_0177n);
     memory.set(0o5632, 0o124_4706_010_0224n);
+    memory.set(0o5715, 0o010_0255_000_0000n);
+    memory.set(0o5716, 0o010_0265_000_0000n);
+    memory.set(0o5717, 0o024_4702_010_0275n);
     memory.set(0o5761, 0o131_0006_000_0000n);
     memory.set(0o5764, 0o010_0021_000_0000n);
     memory.set(0o5765, 0o010_0066_000_0000n);
