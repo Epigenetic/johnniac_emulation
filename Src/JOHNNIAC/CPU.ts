@@ -1051,7 +1051,7 @@ export class CPU {
                             EJ: mask.EJ ? newValues.EJ : undefined,
                             TO: mask.TO ? newValues.TO : undefined,
                         },
-                        stationNumber: Number(this._accumulator.value & 7n),
+                        stationNumber: Number(this._accumulator.value & 127n),
                     };
                     this._typewriterPort.postMessage(message);
                 }
