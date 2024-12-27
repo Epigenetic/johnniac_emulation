@@ -146,6 +146,19 @@ export class CPU {
         return symbolValue + offset;
     }
 
+    private _decodeAddress(address: number): string | undefined {
+        for (let symbol in this._symbolMap) {
+            const lowerBound = this._symbolMap[symbol]![0];
+            const upperBound = lowerBound + this._symbolMap[symbol]![1] - 1;
+            if (address >= lowerBound
+                && address <= upperBound
+            ) {
+                return `${symbol}${(address - lowerBound).toString().padStart(3)}`;
+            }
+        }
+        return undefined;
+    }
+
     private _eventData: MessageEvent<any> | undefined = undefined;
 
     constructor(
@@ -180,24 +193,21 @@ export class CPU {
             if (this._stepThrough || this._breakpoints.has(this._nextInstructionRegister.value)) {
                 console.log({
                     nextInstructionRegister: this._nextInstructionRegister.value,
+                    nextInstructionSymbol: this._decodeAddress(this._nextInstructionRegister.value),
                     accumulator: this._accumulator.value,
                     multipliedQuotient: this._multipliedQuotientRegister.value,
                     currentCommand: CurrentCommand[this._currentCommand],
                     OP: this._currentCommand === CurrentCommand.Left ? OP[leftOp] : OP[rightOp],
-                    opAddress: this._currentCommand === CurrentCommand.Left ? leftAddress : rightAddress
+                    opAddress: this._currentCommand === CurrentCommand.Left ? leftAddress : rightAddress,
+                    opSymbol: this._decodeAddress(this._currentCommand === CurrentCommand.Left ? leftAddress : rightAddress),
                 })
                 debugger;
             }
 
             if (this._trace) {
-                for (let symbol in this._symbolMap) {
-                    const lowerBound = this._symbolMap[symbol]![0];
-                    const upperBound = lowerBound + this._symbolMap[symbol]![1]
-                    if (this._nextInstructionRegister.value >= lowerBound
-                        && this._nextInstructionRegister.value <= upperBound
-                    ) {
-                        console.log(`${symbol}${(this._nextInstructionRegister.value - lowerBound).toString().padStart(3)}`)
-                    }
+                const symbol = this._decodeAddress(this._nextInstructionRegister.value);
+                if (symbol) {
+                    console.log(symbol);
                 }
             }
 
