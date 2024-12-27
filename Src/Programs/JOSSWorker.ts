@@ -3232,7 +3232,7 @@ self.onmessage = async (event) => {
     builder.addCardString('H---E014     H 14     ----     ----     DRUM');
     builder.addCardString('H---E015     H 15 100 0000 000 0000     += \'OF\' DELAYED A/C READING');
     builder.addCardString('H---E016     H 16 100 0000 000 0000     += \'OF\' DELAYED A/C PUNCHING');
-    builder.addCardString('H---E017     H 17                       CURRENT DRUM ROUTINE CONTROL WORD');
+    builder.addCardString('H---E017     H 17 100 0000 000 0000     CURRENT DRUM ROUTINE CONTROL WORD');
     builder.addCardString('H---E018     H 18                       TEMP FOR =21, =27.');
     builder.addCardString('H---E019     H 19                       ACCUMULATED CHARACTERS RESULT OF =27');
     builder.addCardString('H---E020     H 20                       INTEGER FOR OUTPUT');
