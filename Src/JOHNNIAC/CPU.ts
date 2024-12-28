@@ -1090,7 +1090,7 @@ export class CPU {
                         throw new Error("Typewriter worker is required for this opcode");
                     }
 
-                    const message: TTypewriterMessage = { command: WorkerCommand.GetControlRegister, station: Number(this._accumulator.value & 7n) };
+                    const message: TTypewriterMessage = { command: WorkerCommand.GetControlRegister, station: Number(this._accumulator.value & 127n) };
                     this._eventData = undefined;
                     this._typewriterPort.postMessage(message);
                     const eventData = await this._waitForEventMessage();
