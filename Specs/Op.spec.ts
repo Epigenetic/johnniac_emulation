@@ -1265,12 +1265,13 @@ describe("CPU", () => {
         it("Does not halt if switch is not set", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.H1L, 5, OP.HTR, 10));
+            memory.set(5, buildWord(OP.HTL, 15, OP.BLANK, 0));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.switchH1 = false;
             await cpu.go();
-            expect(cpu.nextInstructionRegister).toBe(10);
-            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+            expect(cpu.nextInstructionRegister).toBe(15);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Left);
         });
     });
     describe("H1R", () => {
@@ -1287,12 +1288,13 @@ describe("CPU", () => {
         it("Does not halt if switch is not set", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.H1R, 5, OP.HTL, 10));
+            memory.set(5, buildWord(OP.BLANK, 0, OP.HTR, 15));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.switchH1 = false;
             await cpu.go();
-            expect(cpu.nextInstructionRegister).toBe(10);
-            expect(cpu.currentCommand).toBe(CurrentCommand.Left);
+            expect(cpu.nextInstructionRegister).toBe(15);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
         });
     });
     describe("H2L", () => {
@@ -1309,12 +1311,13 @@ describe("CPU", () => {
         it("Does not halt if switch is not set", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.H2L, 5, OP.HTR, 10));
+            memory.set(5, buildWord(OP.HTL, 15, OP.BLANK, 0));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.switchH2 = false;
             await cpu.go();
-            expect(cpu.nextInstructionRegister).toBe(10);
-            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+            expect(cpu.nextInstructionRegister).toBe(15);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Left);
         });
     });
     describe("H2R", () => {
@@ -1331,12 +1334,13 @@ describe("CPU", () => {
         it("Does not halt if switch is not set", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.H2R, 5, OP.HTL, 10));
+            memory.set(5, buildWord(OP.BLANK, 0, OP.HTR, 15));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.switchH2 = false;
             await cpu.go();
-            expect(cpu.nextInstructionRegister).toBe(10);
-            expect(cpu.currentCommand).toBe(CurrentCommand.Left);
+            expect(cpu.nextInstructionRegister).toBe(15);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
         });
     });
     describe("H3L", () => {
@@ -1353,12 +1357,13 @@ describe("CPU", () => {
         it("Does not halt if switch is not set", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.H3L, 5, OP.HTR, 10));
+            memory.set(5, buildWord(OP.HTL, 15, OP.BLANK, 0));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.switchH3 = false;
             await cpu.go();
-            expect(cpu.nextInstructionRegister).toBe(10);
-            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
+            expect(cpu.nextInstructionRegister).toBe(15);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Left);
         });
     });
     describe("H3R", () => {
@@ -1375,12 +1380,13 @@ describe("CPU", () => {
         it("Does not halt if switch is not set", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.H3R, 5, OP.HTL, 10));
+            memory.set(5, buildWord(OP.BLANK, 0, OP.HTR, 15));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
             cpu.switchH3 = false;
             await cpu.go();
-            expect(cpu.nextInstructionRegister).toBe(10);
-            expect(cpu.currentCommand).toBe(CurrentCommand.Left);
+            expect(cpu.nextInstructionRegister).toBe(15);
+            expect(cpu.currentCommand).toBe(CurrentCommand.Right);
         });
     });
     describe("RD", () => {

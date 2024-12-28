@@ -950,55 +950,56 @@ export class CPU {
                 // If the conditioning switch is on, these operations are unconditional transfer operations
                 if (this._switchH1) {
                     this._halt = true;
-                    this._nextInstructionRegister.value = data;
-                    this._currentCommand = CurrentCommand.Left;
-                    transferExecuted = true;
+
                 }
+                this._nextInstructionRegister.value = data;
+                this._currentCommand = CurrentCommand.Left;
+                transferExecuted = true;
                 break;
             case OP.H1R:
                 // If the conditioning switch is on, these operations are unconditional transfer operations
                 if (this._switchH1) {
                     this._halt = true;
-                    this._nextInstructionRegister.value = data;
-                    this._currentCommand = CurrentCommand.Right;
-                    transferExecuted = true;
                 }
+                this._nextInstructionRegister.value = data;
+                this._currentCommand = CurrentCommand.Right;
+                transferExecuted = true;
                 break;
             case OP.H2L:
                 // If the conditioning switch is on, these operations are unconditional transfer operations
                 if (this._switchH2) {
                     this._halt = true;
-                    this._nextInstructionRegister.value = data;
-                    this._currentCommand = CurrentCommand.Left;
-                    transferExecuted = true;
                 }
+                this._nextInstructionRegister.value = data;
+                this._currentCommand = CurrentCommand.Left;
+                transferExecuted = true;
                 break;
             case OP.H2R:
                 // If the conditioning switch is on, these operations are unconditional transfer operations
                 if (this._switchH2) {
                     this._halt = true;
-                    this._nextInstructionRegister.value = data;
-                    this._currentCommand = CurrentCommand.Right;
-                    transferExecuted = true;
                 }
+                this._nextInstructionRegister.value = data;
+                this._currentCommand = CurrentCommand.Right;
+                transferExecuted = true;
                 break;
             case OP.H3L:
                 // If the conditioning switch is on, these operations are unconditional transfer operations
                 if (this._switchH3) {
                     this._halt = true;
-                    this._nextInstructionRegister.value = data;
-                    this._currentCommand = CurrentCommand.Left;
-                    transferExecuted = true;
                 }
+                this._nextInstructionRegister.value = data;
+                this._currentCommand = CurrentCommand.Left;
+                transferExecuted = true;
                 break;
             case OP.H3R:
                 // If the conditioning switch is on, these operations are unconditional transfer operations
                 if (this._switchH3) {
                     this._halt = true;
-                    this._nextInstructionRegister.value = data;
-                    this._currentCommand = CurrentCommand.Right;
-                    transferExecuted = true;
                 }
+                this._nextInstructionRegister.value = data;
+                this._currentCommand = CurrentCommand.Right;
+                transferExecuted = true;
                 break;
             case OP.WRITE_LINE_BUFFER:
                 {
