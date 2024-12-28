@@ -1016,7 +1016,7 @@ export class CPU {
                     const writeMessage: TTypewriterMessage = {
                         command: WorkerCommand.WriteLineBuffer,
                         lineBuffer,
-                        data: [...this._memory.slice(data, data + 81)].map(value => Number(value)),
+                        data: [...this._memory.slice(data, data + 81)].map(value => Number(value & 127n)),
                     };
 
                     let canWrite = false;
