@@ -842,6 +842,12 @@ export class CPU {
 
                 this._powerShiftRight(data);
                 break;
+            case OP.LLC:
+                // The operation clears MQ before the actual shifting occurs.
+                this._multipliedQuotientRegister.value = 0n;
+
+                this._powerShiftLeft(data);
+                break;
             case OP.SRH:
                 // The shift moves the bits in the Accumulator to the right the specified number of positions. 
                 // Zeros are brought into the zero position of A and bits are dropped from position 39 of A as the shift progresses.
@@ -1172,7 +1178,6 @@ export class CPU {
             case OP.SVQ:
             case OP.AVS:
             case OP.SVS:
-            case OP.LLC:
             case OP.DIS:
             case OP.HUT:
             case OP.PMI:

@@ -729,8 +729,8 @@ describe("CPU", () => {
             expect(memory.get(4)).toBe(1234n);
         });
     });
-    describe("SOL",()=>{
-        it("Stores bits 0-6",async ()=>{
+    describe("SOL", () => {
+        it("Stores bits 0-6", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.SOR, 4));
             memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
@@ -816,7 +816,7 @@ describe("CPU", () => {
             const expectedBits = 0b0001_1111_1111_1111_0000_0000_1111_1111_1111n;
             expect(memory.get(4)).toBe(expectedBits);
         });
-        it("Does not modify other bits",async ()=>{
+        it("Does not modify other bits", async () => {
             const memory = new Memory();
             memory.set(0, buildWord(OP.RA, 2, OP.SAB, 4));
             memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
@@ -1036,6 +1036,32 @@ describe("CPU", () => {
             expect(cpu.multipliedQuotientRegister).toBe(1n << 38n);
         });
     });
+    describe("LLC", () => {
+        describe("LLH", () => {
+            it("Shifts left", async () => {
+                const memory = new Memory();
+                memory.set(0, buildWord(OP.RA, 2, OP.LLC, 1));
+                memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
+                memory.set(2, 2n);
+
+                const cpu = new CPU(memory, new CardReader(), new Drums());
+                await cpu.go();
+                expect(cpu.accumulator).toBe(4n);
+                expect(cpu.multipliedQuotientRegister).toBe(0n);
+            });
+            it("Clears LM before shifting", async () => {
+                const memory = new Memory();
+                memory.set(0, buildWord(OP.RA, 2, OP.LM, 2));
+                memory.set(1, buildWord(OP.LLC, 1, OP.HTR, 2));
+                memory.set(2, 2n);
+
+                const cpu = new CPU(memory, new CardReader(), new Drums());
+                await cpu.go();
+                expect(cpu.accumulator).toBe(4n);
+                expect(cpu.multipliedQuotientRegister).toBe(0n);
+            });
+        });
+    })
     describe("SRH", () => {
         it("Shifts accumulator right", async () => {
             const memory = new Memory();
