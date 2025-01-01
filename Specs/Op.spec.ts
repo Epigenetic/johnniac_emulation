@@ -791,6 +791,31 @@ describe("CPU", () => {
             expect(memory.get(4)).toBe(bits28To39);
         });
     });
+    describe("SAB", () => {
+        it("Stores both sets of address bits", async () => {
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.RA, 2, OP.SAB, 4));
+            memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
+            memory.set(2, FortyBitMask);
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            await cpu.go();
+            const expectedBits = 0b0001_1111_1111_1111_0000_0000_1111_1111_1111n;
+            expect(memory.get(4)).toBe(expectedBits);
+        });
+        it("Does not modify other bits",async ()=>{
+            const memory = new Memory();
+            memory.set(0, buildWord(OP.RA, 2, OP.SAB, 4));
+            memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
+            memory.set(2, FortyBitMask);
+            memory.set(4, 0b0101_0101_0101_0101_0101_0101_0101_0101_0101_0101n);
+
+            const cpu = new CPU(memory, new CardReader(), new Drums());
+            await cpu.go();
+            const expectedBits = 0b101_0101_1111_1111_1111_0101_0101_1111_1111_1111n;
+            expect(memory.get(4)).toBe(expectedBits);
+        });
+    });
     describe("STQ", () => {
         it("Stores MQ to memory", async () => {
             const memory = new Memory();

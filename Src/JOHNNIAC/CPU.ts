@@ -707,6 +707,16 @@ export class CPU {
                     this._memory.set(data, word);
                 }
                 break;
+            case OP.SAB:
+                {
+                    // Stores bits 7-19 and 28-39 of the accumulator to the address. the other bits should be left undisturbed
+                    const toStore = this._accumulator.value & 0b0001_1111_1111_1111_0000_0000_1111_1111_1111n;
+                    let word = this._memory.get(data);
+                    word &= 0b1111_1110_0000_0000_0000_1111_1111_0000_0000_0000n
+                    word |= toStore;
+                    this._memory.set(data, word);
+                }
+                break;
             case OP.STQ:
                 {
                     // The 06 group of operations provide a way for putting the contents of the MQ register in the Store.
@@ -1149,7 +1159,6 @@ export class CPU {
             case OP.DN:
             case OP.SOL:
             case OP.SHL:
-            case OP.SAB:
             case OP.SHR:
             case OP.SVQ:
             case OP.AVS:
