@@ -710,9 +710,9 @@ export class CPU {
             case OP.SOL:
                 {
                     // Store bits 0-6 of the accumulator to the address. The other bits should be left undisturbed
-                    const toStore = this._accumulator.value & 0b111_1111_0000_0000_0000_0000_0000_0000_0000_0000n;
+                    const toStore = this._accumulator.value & 0b1111_1110_0000_0000_0000_0000_0000_0000_0000_0000n;
                     let word = this._memory.get(data);
-                    word &= 0b000_0000_1111_1111_1111_1111_1111_1111_1111_1111n;
+                    word &= 0b0000_0001_1111_1111_1111_1111_1111_1111_1111_1111n;
                     word |= toStore;
                     this._memory.set(data, word);
                 }

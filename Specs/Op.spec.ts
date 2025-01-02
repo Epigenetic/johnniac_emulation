@@ -732,13 +732,13 @@ describe("CPU", () => {
     describe("SOL", () => {
         it("Stores bits 0-6", async () => {
             const memory = new Memory();
-            memory.set(0, buildWord(OP.RA, 2, OP.SOR, 4));
+            memory.set(0, buildWord(OP.RA, 2, OP.SOL, 4));
             memory.set(1, buildWord(OP.HTR, 3, OP.BLANK, 0));
             memory.set(2, FortyBitMask);
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
             await cpu.go();
-            const bits0To6 = 0b0000_0000_0000_0000_0000_1111_1111_0000_0000_0000n;
+            const bits0To6 = 0b1111_1110_0000_0000_0000_0000_0000_0000_0000_0000n;
             expect(memory.get(4)).toBe(bits0To6);
         });
     });
