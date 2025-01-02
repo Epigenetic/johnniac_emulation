@@ -890,11 +890,13 @@ export class CPU {
                                 this._accumulator.value = secondWord;
                             }
                             break
+                        case IODevice.AnelexPrinterNoSpace:
+                            // TODO
+                            break;
                         case IODevice.CardReaderSecondaryFeed:
                         case IODevice.CardPunchFeed:
                         case IODevice.CardPunchFeedAndEcho:
                         case IODevice.ANelexPrinter:
-                        case IODevice.AnelexPrinterNoSpace:
                             throw new Error(`Unimplemented IO device ${IODevice[this._ioDevice]}`)
                     }
                 }
