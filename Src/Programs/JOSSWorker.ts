@@ -5480,7 +5480,6 @@ self.onmessage = async (event) => {
     const drums = new Drums();
 
     const cpu = new CPU(memory, builder.finalize(), drums, true, event.data.port);
-    // cpu.addMemoryBreakpoint(0o5600)
     await cpu.go();
 
     // Load in X 1, X 4, X 5, = 9, = 10, = 22, = 24, = 25, = 26, = 77, = 78, and = 79 over J136E
@@ -5688,6 +5687,7 @@ self.onmessage = async (event) => {
     const now = new Date();
     const nowMinutes = now.getMinutes() + now.getHours() * 60;
     cpu.accumulator = BigInt(nowMinutes);
+
     cpu.symbolMap = {
         "W": [0o4340, 16],
         "L": [0o4360, 16],
@@ -5713,8 +5713,5 @@ self.onmessage = async (event) => {
         "V": [0o6213, 53],
         "R": [0o6300, 82]
     }
-    cpu.trace=true;
-    debugger;
     await cpu.go();
-    debugger;
 }
