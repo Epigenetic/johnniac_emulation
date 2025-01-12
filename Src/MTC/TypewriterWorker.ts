@@ -2,13 +2,19 @@ import { TTypewriterMessage, MultipleTypewriterCommunication, WorkerCommand } fr
 
 declare var self: SharedWorkerGlobalScope;
 
-const stationPortMap:Record<number,MessagePort> = {};
+const stationPortMap: Record<number, MessagePort> = {};
 
 self.onconnect = event => {
     const port = event.ports[0]!;
     port.onmessage = event => {
-        port.postMessage(messageHandler(event, port));
+        const data = messageHandler(event, port);
+        if (data) {
+            port.postMessage(data);
+        }
     };
+    port.onmessageerror = event => {
+        debugger;
+    }
 }
 
 const multipleTypewriterCommunication = new MultipleTypewriterCommunication();
@@ -92,19 +98,20 @@ function messageHandler(event: MessageEvent<TTypewriterMessage>, port: MessagePo
 
                 multipleTypewriterCommunication.setStationControlRegister(event.data.stationNumber, register);
                 if (register.SU) {
-                    return { switchToUser: true };
+                    stationPortMap[register.stationNumber]?.postMessage({ switchToUser: true })
                 }
+                // FIXME- trigger on edge?
                 if (register.EN) {
-                    return { enable: true };
+                    stationPortMap[register.stationNumber]?.postMessage({ enable: true })
                 }
                 if (register.DS) {
-                    return { disable: true };
+                    stationPortMap[register.stationNumber]?.postMessage({ disable: true })
                 }
                 if (register.TL) {
                     const lineBuffer = multipleTypewriterCommunication.getLineBuffer(register.BN);
                     const characters = lineBuffer.getCharactersToTransmit();
                     for (let character of characters) {
-                        stationPortMap[register.stationNumber]?.postMessage({character})
+                        stationPortMap[register.stationNumber]?.postMessage({ character })
                     }
                     register.TL = false;
                     register.TO = true;
