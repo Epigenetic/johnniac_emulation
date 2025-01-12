@@ -126,14 +126,14 @@ function messageHandler(event: MessageEvent<TTypewriterMessage>, port: MessagePo
             }
 
         case WorkerCommand.MatchControlRegister:
-            return multipleTypewriterCommunication.findMatchingRegister(event.data.pattern);
+            return multipleTypewriterCommunication.findMatchingRegister(event.data.mask, event.data.pattern);
         case WorkerCommand.MismatchControlRegister:
-            return multipleTypewriterCommunication.findMismatchRegister(event.data.pattern);
+            return multipleTypewriterCommunication.findMismatchRegister(event.data.mask, event.data.pattern);
         case WorkerCommand.JOSSTypewriterMessage:
             {
                 const stationControlRegister = multipleTypewriterCommunication.getStationControlRegister(event.data.station);
-                if(stationPortMap[event.data.station]===undefined){
-                    stationPortMap[event.data.station]=port;
+                if (stationPortMap[event.data.station] === undefined) {
+                    stationPortMap[event.data.station] = port;
                 }
 
                 if (event.data.on !== undefined) {
