@@ -146,6 +146,7 @@ function messageHandler(event: MessageEvent<TTypewriterMessage>, port: MessagePo
                     const lineBuffer = multipleTypewriterCommunication.getLineBuffer(stationControlRegister.BN);
                     lineBuffer.writeCharacter6Bit(event.data.character);
                 }
+                multipleTypewriterCommunication.setStationControlRegister(event.data.station, stationControlRegister);
             }
 
     }
