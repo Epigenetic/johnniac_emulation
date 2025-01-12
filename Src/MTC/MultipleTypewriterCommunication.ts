@@ -121,8 +121,13 @@ class LineBuffer {
         return this._buffer;
     }
 
-    public getCharactersToTransmit(): Uint8Array {
-        return this._buffer.slice(0, this._pointer);
+    public getCharactersToTransmit(): number[] {
+        const characters = [...this._buffer.slice(0, this._pointer)];
+        return characters.flatMap(sevenBitCharacter => {
+            const upperCase = (sevenBitCharacter >> 6)
+            const sixBitCharacter = sevenBitCharacter & 0b111_111;
+            return [upperCase ? ShiftUpperCase : ShiftLowerCase, sixBitCharacter];
+        })
     }
 }
 
