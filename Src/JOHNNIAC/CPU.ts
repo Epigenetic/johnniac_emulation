@@ -119,6 +119,14 @@ export class CPU {
         this._memory.removeBreakpoint(...addresses);
     }
 
+    public addSymbolMemoryBreakpoint(...symbols: string[]) {
+        this._memory.addBreakpoint(...symbols.map(symbol => this._translateSymbol(symbol)));
+    }
+
+    public removeSymbolMemoryBreakpoint(...symbols: string[]){
+        this._memory.removeBreakpoint(...symbols.map(symbol=>this._translateSymbol(symbol)));
+    }
+
     private _breakpoints: Set<number> = new Set();
     public addBreakpoint(...addresses: number[]) {
         addresses.forEach(address => this._breakpoints.add(address));
