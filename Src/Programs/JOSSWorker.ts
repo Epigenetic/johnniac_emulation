@@ -5572,6 +5572,7 @@ self.onmessage = async (event) => {
     memory.set(0o0763, 0o020_6043_124_4714n);
     memory.set(0o0764, 0o024_4770_050_6043n);
     memory.set(0o0765, 0o010_0000_000_0000n);
+    memory.set(0o2726, 0o024_4702_052_6016n);
     memory.set(0o4640, 0o020_4640_010_0006n);
     memory.set(0o4641, 0o020_4641_010_0006n);
     memory.set(0o4642, 0o020_4642_010_0006n);
