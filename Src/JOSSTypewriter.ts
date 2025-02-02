@@ -13,13 +13,16 @@ export class JOSSTypewriter {
     private _typewriterWorker: SharedWorker;
     private _case = Case.LowerCase;
     private _input: HTMLDivElement;
+    private _statusLights: HTMLDivElement;
 
-    constructor(stationNumber: number, input: HTMLDivElement) {
+    constructor(stationNumber: number, input: HTMLDivElement, statusLights: HTMLDivElement) {
         this._stationNumber = stationNumber;
         this._input = input;
+        this._statusLights = statusLights;
         this._typewriterWorker = new SharedWorker("/Src/MTC/TypewriterWorker.js", { type: "module" });
         this._typewriterWorker.port.onmessage = event => this._onMTCMessage(event.data);
         this._typewriterWorker.port.onmessageerror = event => { debugger };
+        this._updateLights();
     }
 
     public online(): void {
@@ -115,6 +118,18 @@ export class JOSSTypewriter {
                     }
                     break;
             }
+        }
+
+        this._updateLights();
+    }
+
+    private _updateLights() {
+        if (this._state === State.Green) {
+            this._statusLights.children[0]!.textContent="On";
+            this._statusLights.children[1]!.textContent="Off";
+        } else {
+            this._statusLights.children[0]!.textContent="Off";
+            this._statusLights.children[1]!.textContent="On";
         }
     }
 }
