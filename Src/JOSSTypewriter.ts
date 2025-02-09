@@ -1,4 +1,4 @@
-import { Backspace, CarriageReturn, CarriageReturnAndEndOfMessage, EjectAndCarriageReturn, EjectCarriageReturnAndEndOfMessage, EndOfMessage, ShiftLowerCase, ShiftUpperCase, SixBitCharactersLowercase, SixBitCharactersLowercaseReverse, SixBitCharactersUppercaseReverse, Space, Tab, validateCharacter } from "./Characters.js";
+import { Backspace, CarriageReturn, CarriageReturnAndEndOfMessage, EjectAndCarriageReturn, EjectCarriageReturnAndEndOfMessage, EndOfMessage, ShiftLowerCase, ShiftUpperCase, SixBitCharactersLowercase, SixBitCharactersLowercaseReverse, SixBitCharactersUppercase, SixBitCharactersUppercaseReverse, Space, Tab, validateCharacter } from "./Characters.js";
 import { TTypewriterMessage, WorkerCommand } from "./MTC/MultipleTypewriterCommunication.js"
 
 export class JOSSTypewriter {
@@ -49,10 +49,7 @@ export class JOSSTypewriter {
         this._typewriterWorker.port.postMessage(message);
     }
 
-    public sendCharacter(character: number): void {
-        if (!validateCharacter(character))
-            throw new Error(`Invalid character code ${character}`);
-
+    private _sendCharacter(character: number): void {
         const message: TTypewriterMessage = {
             command: WorkerCommand.JOSSTypewriterMessage,
             station: this._stationNumber,
@@ -139,7 +136,44 @@ export class JOSSTypewriter {
         }
     }
 
-   
+    private _onInput(event: InputEvent) {
+        //TODO- limit line length
+        if (!event.data) {
+            if (event.inputType === "deleteContentBackward") {
+                this._sendCharacter(Backspace);
+            }
+        } else {
+            let character = SixBitCharactersLowercase[event.data]
+            if (character !== undefined) {
+                this._sendCharacter(character);
+                return;
+            }
+            character = SixBitCharactersUppercase[event.data];
+
+            if (character === undefined) {
+                event.preventDefault();
+            } else {
+                this._sendCharacter(character | 0b1_000_000)
+            }
+        }
+    }
+
+    private _onKeyUp(event: KeyboardEvent) {
+        if (event.key !== "Enter") {
+            return;
+        }
+        this._state = State.Red;
+        const message: TTypewriterMessage = {
+            command: WorkerCommand.JOSSTypewriterMessage,
+            station: this._stationNumber,
+            carriageReturn: true,
+        };
+        this._typewriterWorker.port.postMessage(message);
+        const value = this._input.value;
+        this._input.value = "";
+        this._output.insertAdjacentHTML("beforeend", value);
+        this._updateLights();
+    }
 }
 
 enum State {

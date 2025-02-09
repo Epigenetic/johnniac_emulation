@@ -77,6 +77,12 @@ function messageHandler(event: MessageEvent<TTypewriterMessage>, port: MessagePo
                     register.SU = scr.SU;
                 }
 
+                if (register.CL && !register.TL) {
+                    const lineBuffer = multipleTypewriterCommunication.getLineBuffer(register.BN);
+                    lineBuffer.clear();
+                    register.CL = false;
+                }
+
                 if (register.SU) {
                     register.F = false;
                     register.EN = false;
@@ -144,7 +150,10 @@ function messageHandler(event: MessageEvent<TTypewriterMessage>, port: MessagePo
                 }
                 if (event.data.character) {
                     const lineBuffer = multipleTypewriterCommunication.getLineBuffer(stationControlRegister.BN);
-                    lineBuffer.writeCharacter6Bit(event.data.character);
+                    lineBuffer.writeCharacter7Bit(event.data.character);
+                }
+                if (event.data.carriageReturn !== undefined) {
+                    stationControlRegister.RC = event.data.carriageReturn;
                 }
                 multipleTypewriterCommunication.setStationControlRegister(event.data.station, stationControlRegister);
             }

@@ -83,32 +83,12 @@ export const MatchPatternMask = FortyBitMask - 127n;
 class LineBuffer {
     private _buffer = new Uint8Array(81);
     private _pointer = 0;
-    private _uppercase = false;
-
-    public get uppercase(): boolean {
-        return this._uppercase;
-    }
-    public set uppercase(value: boolean) {
-        this._uppercase = value;
-    }
 
     public writeCharacter7Bit(character: number): void {
         this._buffer[this._pointer] = character & 127;
         if (this._pointer < 80) {
             this._pointer++;
         }
-    }
-
-    public writeCharacter6Bit(character: number): void {
-        if (character === ShiftUpperCase) {
-            this._uppercase = true;
-            return;
-        } else if (character === ShiftLowerCase) {
-            this._uppercase = false
-            return;
-        }
-
-        this.writeCharacter7Bit(character | (this._uppercase ? 64 : 0)); // TODO - verify
     }
 
     public deleteCharacter(): void {
@@ -128,6 +108,11 @@ class LineBuffer {
             const sixBitCharacter = sevenBitCharacter & 0b111_111;
             return [upperCase ? ShiftUpperCase : ShiftLowerCase, sixBitCharacter];
         })
+    }
+
+    public clear(): void {
+        this._buffer = new Uint8Array(81);
+        this._pointer = 0;
     }
 }
 
@@ -354,4 +339,5 @@ interface IJOSSTypewriterMessage extends ITypewriterMessage {
     on?: true;
     off?: true;
     character?: number;
+    carriageReturn?: true;
 }

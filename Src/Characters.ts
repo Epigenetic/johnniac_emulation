@@ -1,4 +1,4 @@
-export const SixBitCharactersLowercase = {
+export const SixBitCharactersLowercase: Record<string, number> = {
     "1": 0b000_001,
     "2": 0b000_010,
     "3": 0b000_011,
@@ -65,7 +65,7 @@ export const EjectAndCarriageReturn = 0b011_111;
 export const TakeControlOut = 0b011_010;
 export const Space = 0b001_110;
 
-export const SixBitCharactersUppercase = {
+export const SixBitCharactersUppercase: Record<string, number> = {
     "'": 0b000_001,
     "\"": 0b000_010,
     "#": 0b000_011,
