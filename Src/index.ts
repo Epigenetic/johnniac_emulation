@@ -11,7 +11,8 @@ jossWorker.postMessage({ port: typewriterWorker.port }, [typewriterWorker.port])
 
 globalThis.typewriter = new JOSSTypewriter(
     0,
-     document.getElementById("jossInput")! as HTMLDivElement,
-     document.getElementById("statusLights")! as HTMLDivElement
+     document.getElementById("jossInput")! as HTMLInputElement,
+     document.getElementById("jossOutput")! as HTMLDivElement,
+     document.getElementById("statusLights")! as HTMLDivElement,
     );
 globalThis.typewriter.online();

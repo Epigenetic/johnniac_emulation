@@ -12,16 +12,20 @@ export class JOSSTypewriter {
     private _ribbonColor = RibbonColor.Black;
     private _typewriterWorker: SharedWorker;
     private _case = Case.LowerCase;
-    private _input: HTMLDivElement;
+    private _input: HTMLInputElement;
+    private _output: HTMLDivElement;
     private _statusLights: HTMLDivElement;
 
-    constructor(stationNumber: number, input: HTMLDivElement, statusLights: HTMLDivElement) {
+    constructor(stationNumber: number, input: HTMLInputElement, output: HTMLDivElement, statusLights: HTMLDivElement) {
         this._stationNumber = stationNumber;
         this._input = input;
+        this._output = output;
         this._statusLights = statusLights;
         this._typewriterWorker = new SharedWorker("/Src/MTC/TypewriterWorker.js", { type: "module" });
         this._typewriterWorker.port.onmessage = event => this._onMTCMessage(event.data);
         this._typewriterWorker.port.onmessageerror = event => { debugger };
+        this._input.addEventListener("input", event => this._onInput(event as InputEvent))
+        this._input.addEventListener("keyup", event => this._onKeyUp(event))
         this._updateLights();
     }
 
@@ -80,31 +84,31 @@ export class JOSSTypewriter {
                     break;
                 case EjectAndCarriageReturn:
                     // TODO- make better representation of new page
-                    this._input.insertAdjacentHTML("beforeend", "<br/><br/>");
+                    this._output.insertAdjacentHTML("beforeend", "<br/><br/>");
                     break;
                 case EjectCarriageReturnAndEndOfMessage:
                     // TODO- make better representation of new page
-                    this._input.insertAdjacentHTML("beforeend", "<br/><br/>");
+                    this._output.insertAdjacentHTML("beforeend", "<br/><br/>");
                     this._ribbonColor = RibbonColor.Green;
                     break
                 case CarriageReturn:
-                    this._input.insertAdjacentHTML("beforeend", "<br/>");
+                    this._output.insertAdjacentHTML("beforeend", "<br/>");
                     break;
                 case CarriageReturnAndEndOfMessage:
-                    this._input.insertAdjacentHTML("beforeend", "<br/>");
+                    this._output.insertAdjacentHTML("beforeend", "<br/>");
                     this._ribbonColor = RibbonColor.Green;
                     break;
                 case EndOfMessage:
                     this._ribbonColor = RibbonColor.Green;
                     break;
                 case Tab:
-                    this._input.insertAdjacentHTML("beforeend", "&emsp;");
+                    this._output.insertAdjacentHTML("beforeend", "&emsp;");
                     break;
                 case Space:
-                    this._input.insertAdjacentHTML("beforeend", "&nbsp;");
+                    this._output.insertAdjacentHTML("beforeend", "&nbsp;");
                     break;
                 case Backspace:
-                    this._input.dispatchEvent(new InputEvent("beforeinput", {
+                    this._output.dispatchEvent(new InputEvent("beforeinput", {
                         inputType: "deleteContentBackward"
                     }));
                     break;
@@ -112,7 +116,7 @@ export class JOSSTypewriter {
                     if (!validateCharacter(message.character)) {
                         console.debug(`Unknown character: ${message.character.toString(2).padStart(6, "0")}`)
                     } else {
-                        this._input.insertAdjacentHTML("beforeend", this._case === Case.UpperCase
+                        this._output.insertAdjacentHTML("beforeend", this._case === Case.UpperCase
                             ? SixBitCharactersUppercaseReverse[message.character]!
                             : SixBitCharactersLowercaseReverse[message.character]!);
                     }
@@ -125,13 +129,17 @@ export class JOSSTypewriter {
 
     private _updateLights() {
         if (this._state === State.Green) {
-            this._statusLights.children[0]!.textContent="On";
-            this._statusLights.children[1]!.textContent="Off";
+            this._statusLights.children[0]!.textContent = "On";
+            this._statusLights.children[1]!.textContent = "Off";
+            this._input.disabled = false;
         } else {
-            this._statusLights.children[0]!.textContent="Off";
-            this._statusLights.children[1]!.textContent="On";
+            this._statusLights.children[0]!.textContent = "Off";
+            this._statusLights.children[1]!.textContent = "On";
+            this._input.disabled = true;
         }
     }
+
+   
 }
 
 enum State {
