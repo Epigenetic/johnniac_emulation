@@ -1216,7 +1216,7 @@ describe("CPU", () => {
         });
         it("Throws on unimplemented device", async () => {
             const memory = new Memory();
-            memory.set(0, buildWord(OP.SEL, IODevice.AnelexPrinterNoSpace, OP.C, 2));
+            memory.set(0, buildWord(OP.SEL, IODevice.CardPunchFeedAndEcho, OP.C, 2));
             memory.set(1, buildWord(OP.HTR, 2, OP.BLANK, 0));
 
             const cpu = new CPU(memory, new CardReader(), new Drums());
