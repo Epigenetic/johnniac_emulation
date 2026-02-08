@@ -2104,7 +2104,7 @@ self.onmessage = async (event) => {
     builder.addCardString('X002E310          024 I  1 002 * 35     JUMP IF WAITING FOR INITIALS');
     builder.addCardString('X002E320          024 I  1 002 G 14     JUMP IF WAITING FOR VALUE DEMANDED');
     builder.addCardString('X002E330          130 $  0              ELSE PHONY SUBSTATE CODE');
-    builder.addCardString('X002E335     * 35 020 H  9 010 X 10     CLEAR H9 AND JUMP');
+    builder.addCardString('X002E335     * 35 050 H  9 010 X 10     CLEAR H9 AND JUMP');
     builder.addCardString('X002E340     * 40 020 R  1 005 X 12     JUMP IF EMPTY TO SWITCH VIA X12');
     builder.addCardString('X002E350          020 P  1 050 P 18     SAVE LAST CHARACTER');
     builder.addCardString('X002E360          124 A124 025 A124');
