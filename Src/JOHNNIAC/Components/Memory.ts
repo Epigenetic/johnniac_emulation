@@ -1,14 +1,20 @@
+export enum MemoryInteraction {
+    Read = 1,
+    Write = 2,
+}
+
 export class Memory {
     private _memory = new BigUint64Array(4096);
 
-    private _breakPoints: Set<number> = new Set();
+    private _breakPoints: Map<number, MemoryInteraction> = new Map();
 
     constructor() {
         this._memory.fill(0n);
     }
 
     public get(address: number): bigint {
-        if (this._breakPoints.has(address)) {
+        const interaction = this._breakPoints.get(address)
+        if (interaction && interaction & MemoryInteraction.Read) {
             debugger;
         }
         const value = this._memory[address];
@@ -19,7 +25,8 @@ export class Memory {
     }
 
     public set(address: number, value: bigint) {
-        if (this._breakPoints.has(address)) {
+        const interaction = this._breakPoints.get(address)
+        if (interaction && interaction & MemoryInteraction.Write) {
             debugger;
         }
         this._memory[address] = BigInt.asUintN(40, value);
@@ -29,8 +36,8 @@ export class Memory {
         return this._memory.slice(start, end);
     }
 
-    public addBreakpoint(...addresses: number[]) {
-        addresses.forEach(address => this._breakPoints.add(address));
+    public addBreakpoint(interaction: MemoryInteraction, ...addresses: number[]) {
+        addresses.forEach(address => this._breakPoints.set(address, interaction));
     }
 
     public removeBreakpoint(...addresses: number[]) {

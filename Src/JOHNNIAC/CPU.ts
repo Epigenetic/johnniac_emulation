@@ -1,6 +1,6 @@
 import { CardReader } from "./Components/CardReader.js";
 import { Drums } from "./Components/Drum.js";
-import { Memory } from "./Components/Memory.js";
+import { Memory, MemoryInteraction } from "./Components/Memory.js";
 import { MatchPatternMask, StationControlRegister, TTypewriterMessage, WorkerCommand } from "../MTC/MultipleTypewriterCommunication.js";
 import { OP } from "./OP.js";
 import { FortyBitMask, NextInstructionRegister, Register } from "./Register.js";
@@ -113,16 +113,16 @@ export class CPU {
         this._symbolMap = value;
     }
 
-    public addMemoryBreakpoint(...addresses: number[]) {
-        this._memory.addBreakpoint(...addresses);
+    public addMemoryBreakpoint(interaction: MemoryInteraction, ...addresses: number[]) {
+        this._memory.addBreakpoint(interaction, ...addresses);
     }
 
     public removeMemoryBreakpoint(...addresses: number[]) {
         this._memory.removeBreakpoint(...addresses);
     }
 
-    public addSymbolMemoryBreakpoint(...symbols: string[]) {
-        this._memory.addBreakpoint(...symbols.map(symbol => this._translateSymbol(symbol)));
+    public addSymbolMemoryBreakpoint(interaction: MemoryInteraction, ...symbols: string[]) {
+        this._memory.addBreakpoint(interaction, ...symbols.map(symbol => this._translateSymbol(symbol)));
     }
 
     public removeSymbolMemoryBreakpoint(...symbols: string[]) {
@@ -210,7 +210,7 @@ export class CPU {
                     OP: this._currentCommand === CurrentCommand.Left ? OP[leftOp] : OP[rightOp],
                     opAddress: this._currentCommand === CurrentCommand.Left ? leftAddress : rightAddress,
                     opSymbol: this._decodeAddress(this._currentCommand === CurrentCommand.Left ? leftAddress : rightAddress),
-                })
+                });
                 debugger;
             }
 

@@ -1,6 +1,7 @@
 import { CPU } from "../JOHNNIAC/CPU.js";
 import { CardStackBuilder } from "../JOHNNIAC/CardStackBuilder.js";
 import { Drums } from "../JOHNNIAC/Components/Drum.js";
+import { MemoryInteraction } from "../JOHNNIAC/Components/Memory.js";
 import { j136e } from "./J136E-Modified.js";
 
 self.onmessage = async (event) => {
