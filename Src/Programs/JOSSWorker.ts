@@ -5056,7 +5056,7 @@ self.onmessage = async (event) => {
     builder.addCardString('INITIATE          020 * 94 025 * 95');
     builder.addCardString('INITIATE          001 *  2 020 K  4');
     builder.addCardString('INITIATE          050    0 050,7776');
-    // builder.addCardString('INITIATE          050,7777 106    0     RESTORE PRINTER');
+    builder.addCardString('INITIATE          050,7777 106    0     RESTORE PRINTER');
     builder.addCardString('INITIATE          004 * 96 111,6000     SETUP PRIMER COPY OF USER BLOCK');
     builder.addCardString('INITIATE          010 X  1              KICKOFF');
     builder.addCardString('INITIATE     * 90             ,1234     IDENTIFIER FOR TIME ENTRY');

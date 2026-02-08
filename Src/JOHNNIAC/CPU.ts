@@ -59,6 +59,8 @@ export class CPU {
         return this._ioDevice;
     }
     private _halt = false;
+    private _currentCharacter = 0;
+    private _analexLineInProgress = "";
 
     private _clockBuffer: Uint16Array | undefined;
     private _clockWorker: Worker | undefined;
@@ -123,8 +125,8 @@ export class CPU {
         this._memory.addBreakpoint(...symbols.map(symbol => this._translateSymbol(symbol)));
     }
 
-    public removeSymbolMemoryBreakpoint(...symbols: string[]){
-        this._memory.removeBreakpoint(...symbols.map(symbol=>this._translateSymbol(symbol)));
+    public removeSymbolMemoryBreakpoint(...symbols: string[]) {
+        this._memory.removeBreakpoint(...symbols.map(symbol => this._translateSymbol(symbol)));
     }
 
     private _breakpoints: Set<number> = new Set();
@@ -899,7 +901,31 @@ export class CPU {
                             }
                             break
                         case IODevice.AnelexPrinterNoSpace:
-                            // TODO
+                            // Each copy given after the selection of the printer causes forty
+                            // bits to be brought from the specified location in the Store, put in
+                            // the Number register and presented tp the printer. Ones in the first
+                            // word presented cause zeros to be printed in the appropriate columns.
+                            // The next copy causes ones to be printed, etc. Ten copies are required
+                            // to print the ten decimal characters on a line. A copy check can result
+                            // from a late copy or from too many copies. Giving fever than
+                            // ten copies does not cause a copy check. The contents of A and MJ are
+                            // undisturbed by the print copy operatlon.
+                            const toPrint = this._memory.get(data);
+                            this._numberRegister.value = toPrint;
+                            toPrint.toString(2).padStart(40, "0").split('').forEach((char, index) => {
+                                if (char === "0") {
+                                    return;
+                                }
+
+                                this._analexLineInProgress = this._analexLineInProgress.substring(0, index) + this._currentCharacter.toString() + this._analexLineInProgress.substring(index + 1);
+                            })
+                            if (this._currentCharacter === 9) {
+                                console.log(this._analexLineInProgress.padStart(40))
+                                this._analexLineInProgress = "";
+                                this._currentCharacter = 0;
+                            } else {
+                                this._currentCharacter++;
+                            }
                             break;
                         case IODevice.CardReaderSecondaryFeed:
                         case IODevice.CardPunchFeed:
